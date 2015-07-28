@@ -1,0 +1,8 @@
+*.o
+tags
+*_test
+cscope.out
+editor
+engine
+*.bmp
+*.map
