@@ -42,10 +42,8 @@
 struct {
     Vector position;
     Vector forward;
-    Vector velocity;
-    double vel;         // Forward velocity
-    double sidevel;     // Lateral velocity
-    double vang;        // Angular velocity
+
+    int fwd, strafe, turn;
 } player;
 
 Map *map;
@@ -59,6 +57,7 @@ Texture *ceiling;
 
 int grabf = 1;  // Grab mouse flag
 int mapf;       // Show map flag
+int walkf;      // Walk flag
 
 const Point SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
 
@@ -72,7 +71,6 @@ void Init() {
     // Player
     player.position = (Vector){ 25, 25 };
     player.forward = G_Normalize((Vector){ 1, 1 });
-    player.velocity = (Vector){ 0, 0 };
 
     // Map
     map = M_Load("level.map");
@@ -226,32 +224,36 @@ void Input() {
                         S_ToggleFullcreen();
                         break;
 
+                    case SDLK_LSHIFT:
+                        walkf = 1;
+                        break;
+
                     case SDLK_UP:
                     case 'w':
-                        player.vel = VEL;
+                        player.fwd = 1;
                         break;
 
                     case SDLK_DOWN:
                     case 's':
-                        player.vel = -VEL;
+                        player.fwd = -1;
                         break;
 
                     case 'a':
-                        player.sidevel = -VEL;
+                        player.strafe= -1;
                         break;
 
                     case 'h':
                     case SDLK_LEFT:
-                        player.vang = -VANG;
+                        player.turn = -1;
                         break;
 
                     case 'd':
-                        player.sidevel = VEL;
+                        player.strafe = 1;
                         break;
 
                     case 'l':
                     case SDLK_RIGHT:
-                        player.vang = VANG;
+                        player.turn = 1;
                         break;
 
                     case '\t':
@@ -274,20 +276,23 @@ void Input() {
                     case SDLK_DOWN:
                     case 'w':
                     case 's':
-                        player.vel = 0;
+                        player.fwd = 0;
                         break;
 
                     case 'a':
                     case 'd':
-                        player.sidevel = 0;
+                        player.strafe = 0;
                         break;
 
                     case 'h':
                     case 'l':
                     case SDLK_RIGHT:
                     case SDLK_LEFT:
-                        player.vang = 0;
+                        player.turn = 0;
                         break;
+
+                    case SDLK_LSHIFT:
+                        walkf = 0;
                 }
                 break;
         }
@@ -297,33 +302,27 @@ void Input() {
 
 
 void Logic() {
-    // Rotation
-    if (player.vang) {
-        player.forward = G_Rotate(player.forward, player.vang);
+    // Turning
+    if (player.turn) {
+        player.forward = G_Rotate(player.forward, player.turn * VANG);
     }
 
     // Translation
-    if (player.vel || player.sidevel) {
+    if (player.fwd || player.strafe) {
         Vector side = G_Perpendicular(player.forward);
 
-        player.velocity = G_Sum(
-                G_Scale(player.vel, player.forward),
-                G_Scale(player.sidevel, side)
+        int vel = walkf ? VEL / 2 : VEL;
+
+        Vector velocity = G_Scale(vel,
+                G_Sum(
+                    G_Scale(player.fwd, player.forward),
+                    G_Scale(player.strafe, side)
+                    )
                 );
 
-        Segment displacement = {
-            .start = player.position,
-            .end = G_Sum(player.position, player.velocity)
-        };
+        Vector end = G_Sum(player.position, velocity);
 
-        player.position = displacement.end;
-
-        M_GoBeforeFirst(it);
-        for (Wall *w = M_GetNext(it); w; w = M_GetNext(it)) {
-            if (G_SegmentSegmentIntersection(w->seg, displacement, NULL)) {
-                puts("COLLISION!");  // TODO
-            }
-        }
+        player.position = end;
     }
 }
 
