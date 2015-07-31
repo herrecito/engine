@@ -1,4 +1,4 @@
-CC=gcc
+CC=clang
 CFLAGS=-g -Wall -O3 -Isrc -I/usr/include/SDL2 -D_REENTRANT
 LDLIBS=-lm -lSDL2 -lpthread
 
