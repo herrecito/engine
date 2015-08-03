@@ -51,9 +51,9 @@ static MapIterator *it;
 
 Buffer *buffer;
 
-Texture *wall;
-Texture *flor;
-Texture *ceiling;
+Texture *walltex;
+Texture *flortex;
+Texture *ceiltex;
 
 int grabf = 1;  // Grab mouse flag
 int mapf;       // Show map flag
@@ -77,9 +77,9 @@ void Init() {
     it = M_GetIterator(map);
 
     // Textures
-    flor = S_LoadTexture("floor.bmp");
-    wall = S_LoadTexture("wall.bmp");
-    ceiling = S_LoadTexture("ceil.bmp");
+    flortex = S_LoadTexture("floor.bmp");
+    walltex = S_LoadTexture("wall.bmp");
+    ceiltex = S_LoadTexture("ceil.bmp");
 }
 
 
@@ -89,8 +89,6 @@ void Quit() {
     M_DeleteIterator(it);
     exit(1);
 }
-
-
 
 
 void DrawPlayer() {
@@ -114,77 +112,76 @@ void DrawMap() {
 }
 
 
-void DrawCol(int x, int height, double distance, Wall *w, double offset) {
-    int texture_col = MOD((int)offset, wall->width);
-
-    for (int i = 0; i < height; i++) {
-        int ii = WALLHEIGHT * i / height;
-
-        int y = (buffer->height - height)/2 + i;
-
-        if (y < 0 || y >= HEIGHT) continue;
-
-        Color c = wall->pixels[ii * wall->width + texture_col];
-        if (distance > FAR) {
-            c = C_ScaleColor(c, FAR / distance);
-        }
-
-        D_DrawPixel(buffer, x, y, c);
-    }
-}
-
-
-// Raycasting
 void DrawPOV() {
     for (int x = 0; x < WIDTH; x++) {
-        double ray_angle = atan2(x - (WIDTH / 2), VIEW);
+        double ray_angle = atan2((x + 0.5) - (WIDTH / 2), VIEW);
         double ray_cos = cos(ray_angle);
-        double viewcos = VIEW / ray_cos;  // Distance to the viewplane along the ray
-        double nearcos = NEAR / ray_cos;  // Distance to the nearclipplane along the ray
+        double viewcos = VIEW / ray_cos;
+        double nearcos = NEAR / ray_cos;
 
         Ray ray = {
             .start = player.position,
             .dir = G_Rotate(player.forward, ray_angle)
         };
 
-        double last_distance = DBL_MAX; // "Z Buffering"
-        int last_height = 0;
+        // Iterate over all the walls and use the one that's hit
+        // closest to the player.
+        Wall *wall = NULL;
+        double distance = DBL_MAX;
+        Vector hit;
 
-        // Walls
         M_GoBeforeFirst(it);
         for (Wall *w = M_GetNext(it); w; w = M_GetNext(it)) {
-            Vector hit;
-            if (G_SegmentRayIntersection(w->seg, ray, &hit)) {
-                double distance = G_Distance(hit, player.position);
-
-                if (distance < nearcos) continue;
-                if (distance > last_distance) continue;
-
-                int col_height = viewcos * WALLHEIGHT / distance;
-                DrawCol(x, col_height, distance, w, G_Distance(w->seg.start, hit));
-
-                last_height = col_height;
-                last_distance = distance;
+            Vector h;
+            if (G_SegmentRayIntersection(w->seg, ray, &h)) {
+                double d = G_Distance(h, player.position);
+                if (d < distance && d > nearcos) {
+                    wall = w;
+                    distance = d;
+                    hit = h;
+                }
             }
         }
 
-        // Floor casting
-        for (int h = 1 + (HEIGHT - last_height) / 2; h > 0; h--) {
+        // Wall
+        int col_height = 0;
+        if (wall) {
+            col_height = viewcos * WALLHEIGHT / distance;
+            // Everything is *much* easier if col_height is even.
+            if (col_height & 1) col_height++;
+
+            int top = (buffer->height - col_height) / 2;
+
+            int texel_x = MOD((int)G_Distance(wall->seg.start, hit), walltex->width);
+            for (int i = 0; i < col_height; i++) {
+                int y = top + i;
+                if (y < 0 || y >= HEIGHT) continue;
+
+                int texel_y = WALLHEIGHT * i / col_height;
+                Color c = walltex->pixels[texel_y * walltex->width + texel_x];
+                if (distance > FAR) {
+                    c = C_ScaleColor(c, FAR / distance);
+                }
+
+                D_DrawPixel(buffer, x, y, c);
+            }
+        }
+
+        // Floor & ceiling
+        for (int h = (HEIGHT - col_height) / 2; h > 0; h--) {
             double texel_distance = (POVHEIGHT * viewcos) / ((HEIGHT / 2) - h);
             Point texel_world_pos = G_Sum(player.position, G_Scale(texel_distance, ray.dir));
 
-            int texel_x = MOD((int)texel_world_pos.x, flor->width);
-            int texel_y = MOD((int)texel_world_pos.y, flor->height);
+            int texel_x = MOD((int)texel_world_pos.x, flortex->width);
+            int texel_y = MOD((int)texel_world_pos.y, flortex->height);
 
-            // Floor
-            Color c = flor->pixels[texel_y * flor->width + texel_x];
+            Color c = flortex->pixels[texel_y * flortex->width + texel_x];
             if (texel_distance > FAR) {
                 c = C_ScaleColor(c, FAR / texel_distance);
             }
             D_DrawPixel(buffer, x, HEIGHT - h, c);
 
-            // Ceiling
-            c = ceiling->pixels[texel_y * flor->width + texel_x];
+            c = ceiltex->pixels[texel_y * ceiltex->width + texel_x];
             if (texel_distance > FAR) {
                 c = C_ScaleColor(c, FAR / texel_distance);
             }
