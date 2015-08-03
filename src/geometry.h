@@ -103,7 +103,7 @@ double G_GetSide(Segment l, Vector p);
 // *The right of the vector l.start -> l.end
 double G_GetSideSegment(Segment l, Segment a);
 
-// Returns 1 if p is over the segment s
+// Returns 1 if p is over the segment s.
 int G_PointInSegment(Segment s, Vector p);
 
 // Returns the minimum distance between point p and segment seg
@@ -133,7 +133,7 @@ typedef Line Ray;
 // Stores the intersection point in p.
 int G_SegmentRayIntersection(Segment seg, Ray ray, Vector *intersection);
 
-// Calculates the intersections between a Segment and a Line.
+// Calculates the intersection between a Segment and a Line.
 //
 // Returns 1 if there's an intersection, 0 otherwise.
 // Stores the intersection point in p.

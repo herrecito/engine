@@ -185,7 +185,6 @@ double G_SegmentPointDistance(Segment seg, Vector p) {
 }
 
 
-
 Vector G_NearestPointOnSegment(Segment seg, Vector p) {
     double ap = G_Distance(p, seg.start);
     double bp = G_Distance(p, seg.end);
