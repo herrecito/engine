@@ -82,12 +82,8 @@ void S_Blit(Buffer *buf) {
             int yy = y * yscale;
             int i = yy * buf->width + xx;
 
-            ((uint32_t *)winsurf->pixels)[y * winwidth + x] = SDL_MapRGB(
-                winsurf->format,
-                buf->pixels[i].red,
-                buf->pixels[i].green,
-                buf->pixels[i].blue
-                );
+            ((uint32_t *)winsurf->pixels)[y * winwidth + x] =
+                buf->pixels[i].red << 16 | buf->pixels[i].green << 8 | buf->pixels[i].blue;
         }
     }
 
