@@ -222,7 +222,7 @@ void Draw() {
 
     WallNode *wn = level.first;
     while (wn) {
-        Color color;
+        uint32_t color;
         if (G_SegmentPointDistance(wn->wall->seg, S_GetMousePos(buffer)) < SNAP_DISTANCE) {
             color = RED;
         } else {

@@ -53,7 +53,6 @@ void S_GrabMouse(int flag) {
 void S_Init(const char *title, int width, int height) {
     SDL_Init(SDL_INIT_VIDEO);
 
-
     // Window creation
     win = SDL_CreateWindow(
             title,
@@ -82,8 +81,7 @@ void S_Blit(Buffer *buf) {
             int yy = y * yscale;
             int i = yy * buf->width + xx;
 
-            ((uint32_t *)winsurf->pixels)[y * winwidth + x] =
-                buf->pixels[i].red << 16 | buf->pixels[i].green << 8 | buf->pixels[i].blue;
+            ((uint32_t *)winsurf->pixels)[y * winwidth + x] = buf->pixels[i];
         }
     }
 
@@ -122,12 +120,11 @@ Texture *S_LoadTexture(const char *path) {
     t->height = tex_surf->h;
     t->pixels = malloc(sizeof(t->pixels[0]) * t->width * t->height);
 
-    // Sorry.
     for (int i = 0, j = 0; i < 3 * t->width * t->height; i += 3, j++) {
         uint32_t raw_pixel = *((uint32_t *)((uint8_t *)tex_surf->pixels + i));
         uint8_t red, green, blue;
         SDL_GetRGB(raw_pixel, tex_surf->format, &red, &green, &blue);
-        t->pixels[j] = (Color){ red, green, blue };
+        t->pixels[j] = BUILDRGB(red, green, blue);
     }
 
     SDL_FreeSurface(tex_surf);

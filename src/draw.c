@@ -14,7 +14,7 @@
 // Low Level
 //-----------------------------------------------------------------------------
 
-void D_DrawPixel(Buffer *b, int x, int y, Color color) {
+void D_DrawPixel(Buffer *b, int x, int y, uint32_t color) {
     if (x >= 0 && x < b->width && y >= 0 && y < b->height) {
         b->pixels[y * b->width + x] = color;
     } else {
@@ -24,7 +24,7 @@ void D_DrawPixel(Buffer *b, int x, int y, Color color) {
 
 
 // Doom's version of Bresenham
-void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, Color color) {
+void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, uint32_t color) {
     int dx = x1 - x0;
     int ax = 2 * abs(dx);
     int sx = dx < 0 ? -1 : 1;
@@ -67,7 +67,7 @@ void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, Color color) {
 
 
 
-void D_ClearBuffer(Buffer *b, Color color) {
+void D_ClearBuffer(Buffer *b, uint32_t color) {
     for (int i = 0; i < b->width * b->height; i++) {
         b->pixels[i] = color;
     }
@@ -80,13 +80,13 @@ void D_ClearBuffer(Buffer *b, Color color) {
 // High Level
 //-----------------------------------------------------------------------------
 
-void D_DrawSegment(Buffer *b, Segment l, Color color) {
+void D_DrawSegment(Buffer *b, Segment l, uint32_t color) {
     D_DrawLine(b, l.start.x, l.start.y, l.end.x, l.end.y, color);
 }
 
 
 
-void D_DrawBox(Buffer *buf, Box b, Color color) {
+void D_DrawBox(Buffer *buf, Box b, uint32_t color) {
     D_DrawLine(buf, b.left, b.top, b.right, b.top, color);
     D_DrawLine(buf, b.left, b.bottom, b.right, b.bottom, color);
     D_DrawLine(buf, b.left, b.top, b.left, b.bottom, color);

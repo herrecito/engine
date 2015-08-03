@@ -9,7 +9,7 @@ Buffer *B_CreateBuffer(int width, int height) {
     b->width = width;
     b->height = height;
 
-    b->pixels = malloc(sizeof(Color) * width * height);
+    b->pixels = malloc(4 * width * height);
 
     return b;
 }

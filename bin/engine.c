@@ -158,7 +158,7 @@ void DrawPOV() {
                 if (y < 0 || y >= HEIGHT) continue;
 
                 int texel_y = WALLHEIGHT * i / col_height;
-                Color c = walltex->pixels[texel_y * walltex->width + texel_x];
+                uint32_t c = walltex->pixels[texel_y * walltex->width + texel_x];
                 if (distance > FAR) {
                     c = C_ScaleColor(c, FAR / distance);
                 }
@@ -175,17 +175,17 @@ void DrawPOV() {
             int texel_x = MOD((int)texel_world_pos.x, flortex->width);
             int texel_y = MOD((int)texel_world_pos.y, flortex->height);
 
-            Color c = flortex->pixels[texel_y * flortex->width + texel_x];
+            uint32_t color = flortex->pixels[texel_y * flortex->width + texel_x];
             if (texel_distance > FAR) {
-                c = C_ScaleColor(c, FAR / texel_distance);
+                color = C_ScaleColor(color, FAR / texel_distance);
             }
-            D_DrawPixel(buffer, x, HEIGHT - h, c);
+            D_DrawPixel(buffer, x, HEIGHT - h, color);
 
-            c = ceiltex->pixels[texel_y * ceiltex->width + texel_x];
+            color = ceiltex->pixels[texel_y * ceiltex->width + texel_x];
             if (texel_distance > FAR) {
-                c = C_ScaleColor(c, FAR / texel_distance);
+                color = C_ScaleColor(color, FAR / texel_distance);
             }
-            D_DrawPixel(buffer, x, h - 1, c);
+            D_DrawPixel(buffer, x, h - 1, color);
         }
     }
 }

@@ -5,7 +5,7 @@
 
 typedef struct Buffer {
     int width, height;
-    Color *pixels;
+    uint32_t *pixels;
 } Buffer;
 
 

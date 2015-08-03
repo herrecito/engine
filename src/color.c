@@ -1,24 +1,13 @@
 #include "color.h"
 
-Color C_HexToColor(int hex) {
-    Color c;
+uint32_t C_ScaleColor(uint32_t c, double intensity) {
+    uint8_t red = GETR(c);
+    uint8_t green = GETG(c);
+    uint8_t blue = GETB(c);
 
-    c.blue = hex & 0x0000FF;
-    c.green = (hex & 0x00FF00) >> 8;
-    c.red = (hex & 0xFF0000) >> 16;
+    red *= intensity;
+    green *= intensity;
+    blue *= intensity;
 
-    return c;
-}
-
-
-int C_ColorToHex(Color c) {
-    return c.red << 16 | c.green << 8 | c.blue;
-}
-
-Color C_ScaleColor(Color c, double intensity) {
-    c.red *= intensity;
-    c.green *= intensity;
-    c.blue *= intensity;
-
-    return c;
+    return BUILDRGB(red, green, blue);
 }

@@ -1,28 +1,25 @@
+//------------------------------------------------------------------------------
+// RGB color space
+//------------------------------------------------------------------------------
 #ifndef _COLOR_
 #define _COLOR_
 
 #include <stdint.h>
 
-typedef struct Color {
-    uint8_t red, green, blue;
-} Color;
+#define BLACK     0x000000
+#define BLUE      0x0000FF
+#define GREEN     0x00FF00
+#define GREY      0x111111
+#define LIGHTGREY 0x222222
+#define RED       0xFF0000
+#define WHITE     0xFFFFFF
 
+#define GETR(c) (((c) >> 16) & 0xFF)
+#define GETG(c) (((c) >>  8) & 0xFF)
+#define GETB(c) (((c) >>  0) & 0xFF)
 
-#define HEX2COLOR(hex) (C_HexToColor((hex)))
-#define COLOR2HEX(color) (C_ColorToHex((color)))
+#define BUILDRGB(r, g, b) ((r) << 16 | (g) << 8 | (b))
 
-
-#define BLACK       ((Color){ 0x00, 0x00, 0x00 })
-#define BLUE        ((Color){ 0x00, 0x00, 0xFF })
-#define GREEN       ((Color){ 0x00, 0xFf, 0x00 })
-#define GREY        ((Color){ 0x11, 0x11, 0x11 })
-#define LIGHTGREY   ((Color){ 0x22, 0x22, 0x22 })
-#define RED         ((Color){ 0xFF, 0x00, 0x00 })
-#define WHITE       ((Color){ 0xFF, 0xFF, 0xFF })
-
-
-Color C_HexToColor(int hex);
-int C_ColorToHex(Color c);
-Color C_ScaleColor(Color c, double intensity);
+uint32_t C_ScaleColor(uint32_t color, double intensity);
 
 #endif
