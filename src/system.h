@@ -57,10 +57,8 @@ void S_MouseFix();
 // Resources
 //------------------------------------------------------------------------------
 
-typedef Buffer Texture;
-
 // Load the texture given by path.
-Texture *S_LoadTexture(const char *path);
+Buffer *S_LoadTexture(const char *path);
 
 
 #endif

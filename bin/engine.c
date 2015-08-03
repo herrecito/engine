@@ -51,15 +51,15 @@ static MapIterator *it;
 
 Buffer *buffer;
 
-Texture *walltex;
-Texture *flortex;
-Texture *ceiltex;
+Buffer *walltex;
+Buffer *flortex;
+Buffer *ceiltex;
 
 int grabf = 1;  // Grab mouse flag
 int mapf;       // Show map flag
 int walkf;      // Walk flag
 
-const Point SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
+const Vector SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
 
 
 void Init() {
@@ -119,7 +119,7 @@ void DrawPOV() {
         double viewcos = VIEW / ray_cos;
         double nearcos = NEAR / ray_cos;
 
-        Ray ray = {
+        Line ray = {
             .start = player.position,
             .dir = G_Rotate(player.forward, ray_angle)
         };
@@ -170,7 +170,7 @@ void DrawPOV() {
         // Floor & ceiling
         for (int h = (HEIGHT - col_height) / 2; h > 0; h--) {
             double texel_distance = (POVHEIGHT * viewcos) / ((HEIGHT / 2) - h);
-            Point texel_world_pos = G_Sum(player.position, G_Scale(texel_distance, ray.dir));
+            Vector texel_world_pos = G_Sum(player.position, G_Scale(texel_distance, ray.dir));
 
             int texel_x = MOD((int)texel_world_pos.x, flortex->width);
             int texel_y = MOD((int)texel_world_pos.y, flortex->height);

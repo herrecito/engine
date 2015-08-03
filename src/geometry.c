@@ -253,7 +253,7 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
 }
 
 
-int G_RayLineIntersection(Ray ray, Line line, Vector *intersection) {
+int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
     // Vector ab = G_Sub(ray.start, line.start);  // Unused
     Vector ba = G_Sub(line.start, ray.start);
     Vector v = line.dir;
@@ -273,6 +273,6 @@ int G_RayLineIntersection(Ray ray, Line line, Vector *intersection) {
     }
 }
 
-int G_PointInsideBox(Box b, Point p) {
+int G_PointInsideBox(Box b, Vector p) {
     return p.x < b.right && p.x > b.left && p.y < b.bottom && p.y > b.top;
 }

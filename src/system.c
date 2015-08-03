@@ -109,8 +109,8 @@ Vector S_GetMousePos(Buffer *buf) {
 
 
 
-Texture *S_LoadTexture(const char *path) {
-    Texture *t = malloc(sizeof(Texture));
+Buffer *S_LoadTexture(const char *path) {
+    Buffer *t = malloc(sizeof(Buffer));
 
     SDL_Surface *tex_surf = SDL_LoadBMP(path);
     check(tex_surf,

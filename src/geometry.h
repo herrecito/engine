@@ -24,8 +24,6 @@ typedef struct {
     double x, y;
 } Vector;
 
-typedef Vector Point;
-
 
 // Returns a + b
 Vector G_Sum(Vector a, Vector b);
@@ -119,9 +117,6 @@ typedef struct {
     Vector start, dir;
 } Line;
 
-typedef Line Ray;
-
-
 
 //------------------------------------------------------------------------------
 // Intersections
@@ -131,7 +126,7 @@ typedef Line Ray;
 //
 // Returns 1 if there's an intersection, 0 otherwise.
 // Stores the intersection point in p.
-int G_SegmentRayIntersection(Segment seg, Ray ray, Vector *intersection);
+int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection);
 
 // Calculates the intersection between a Segment and a Line.
 //
@@ -149,7 +144,7 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 Vector G_NearestPointOnSegment(Segment seg, Vector p);
 
 // TODO
-int G_RayLineIntersection(Ray ray, Line line, Vector *intersection);
+int G_RayLineIntersection(Line ray, Line line, Vector *intersection);
 
 
 
@@ -163,6 +158,6 @@ typedef struct {
 
 
 // Returns 1 if Point p is inside Box b, 0 otherwise.
-int G_PointInsideBox(Box b, Point p);
+int G_PointInsideBox(Box b, Vector p);
 
 #endif
