@@ -84,7 +84,6 @@ void Init() {
     walltex = S_LoadTexture("wall.png");
     ceiltex = S_LoadTexture("ceil.png");
     numbers = S_LoadSprites("numbers.png", 1, 10);
-
 }
 
 

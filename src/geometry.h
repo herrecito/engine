@@ -140,11 +140,11 @@ int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection);
 // Stores the intersection point in p.
 int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 
-// Returns the nearest point to p over seg.
-Vector G_NearestPointOnSegment(Segment seg, Vector p);
-
 // TODO
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection);
+
+// Returns the nearest point to p over seg.
+Vector G_NearestPointOnSegment(Segment seg, Vector p);
 
 
 
