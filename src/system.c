@@ -104,10 +104,7 @@ Vector S_GetMousePos(Buffer *buf) {
     int mx, my;
     SDL_GetMouseState(&mx, &my);
 
-    return (Vector){
-        mx * buf->width / winwidth,
-        my * buf->height / winheight
-    };
+    return (Vector){ mx * buf->width / winwidth, my * buf->height / winheight };
 }
 
 // http://sdl.beuc.net/sdl.wiki/Pixel_Access
