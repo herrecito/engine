@@ -1,4 +1,5 @@
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include "geometry.h"
 #include "buffer.h"
@@ -52,6 +53,7 @@ void S_GrabMouse(int flag) {
 
 void S_Init(const char *title, int width, int height) {
     SDL_Init(SDL_INIT_VIDEO);
+    IMG_Init(IMG_INIT_PNG);
 
     // Window creation
     win = SDL_CreateWindow(
@@ -67,6 +69,7 @@ void S_Init(const char *title, int width, int height) {
 
 
 void S_Quit() {
+    IMG_Quit();
     SDL_Quit();
 }
 
@@ -107,24 +110,55 @@ Vector S_GetMousePos(Buffer *buf) {
     };
 }
 
+// http://sdl.beuc.net/sdl.wiki/Pixel_Access
+uint32_t GetPixel(SDL_Surface *surface, int x, int y) {
+    int bpp = surface->format->BytesPerPixel;
+    // Here p is the address to the pixel we want to retrieve.
+    uint8_t *p = (uint8_t *)surface->pixels + y * surface->pitch + x * bpp;
+
+    switch (bpp) {
+        case 1:
+            return *p;
+            break;
+
+        case 2:
+            return *(uint16_t *)p;
+            break;
+
+        case 3:
+            if (SDL_BYTEORDER == SDL_BIG_ENDIAN) {
+                return p[0] << 16 | p[1] << 8 | p[2];
+            } else {
+                return p[0] | p[1] << 8 | p[2] << 16;
+            }
+            break;
+
+        case 4:
+            return *(uint32_t *)p;
+            break;
+
+        default:
+            return 0;  // shouldn't happen, but avoids warnings.
+    }
+}
 
 
 Buffer *S_LoadTexture(const char *path) {
-    Buffer *t = malloc(sizeof(Buffer));
-
-    SDL_Surface *tex_surf = SDL_LoadBMP(path);
+    SDL_Surface *tex_surf = IMG_Load(path);
     check(tex_surf,
-            "Error loading texture. SDL_GetError(): %s\n", SDL_GetError());
+            "Error loading texture. IMG_GetError(): %s\n", IMG_GetError());
 
-    t->width = tex_surf->w;
-    t->height = tex_surf->h;
-    t->pixels = malloc(sizeof(t->pixels[0]) * t->width * t->height);
+    Buffer *t = B_CreateBuffer(tex_surf->w, tex_surf->h);
 
-    for (int i = 0, j = 0; i < 3 * t->width * t->height; i += 3, j++) {
-        uint32_t raw_pixel = *((uint32_t *)((uint8_t *)tex_surf->pixels + i));
-        uint8_t red, green, blue;
-        SDL_GetRGB(raw_pixel, tex_surf->format, &red, &green, &blue);
-        t->pixels[j] = BUILDRGB(red, green, blue);
+    for (int x = 0; x < tex_surf->w; x++) {
+        for (int y = 0; y < tex_surf->h; y++) {
+            uint32_t pixel = GetPixel(tex_surf, x, y);
+
+            uint8_t red, green, blue;
+            SDL_GetRGB(pixel, tex_surf->format, &red, &green, &blue);
+
+            t->pixels[y * t->width + x] = BUILDRGB(red, green, blue);
+        }
     }
 
     SDL_FreeSurface(tex_surf);
