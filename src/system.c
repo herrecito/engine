@@ -10,8 +10,9 @@
 
 static SDL_Window *win;
 static SDL_Surface *winsurf;
-static int winwidth;
-static int winheight;
+
+static Buffer *lastbuf;
+static SDL_Surface *surf;
 
 // Flags
 static int fullscreenf;
@@ -22,8 +23,6 @@ int HandleResize(void *userdata, SDL_Event *ev) {
     if (ev->type == SDL_WINDOWEVENT) {
         switch (ev->window.event) {
             case SDL_WINDOWEVENT_RESIZED:
-                winwidth = ev->window.data1;
-                winheight = ev->window.data2;
                 winsurf = SDL_GetWindowSurface(win);
                 break;
         }
@@ -65,7 +64,6 @@ void S_Init(const char *title, int width, int height) {
             SDL_WINDOW_RESIZABLE
             );
     winsurf = SDL_GetWindowSurface(win);
-    SDL_GetWindowSize(win, &winwidth, &winheight);
     SDL_AddEventWatch(HandleResize, NULL);
 }
 
@@ -77,24 +75,25 @@ void S_Quit() {
 
 
 void S_Blit(Buffer *buf) {
-    double xscale = (double)buf->width / winwidth;
-    double yscale = (double)buf->height / winheight;
-
-    for (int x = 0; x < winwidth; x++) {
-        for (int y = 0; y < winheight; y++) {
-            int xx = x * xscale;
-            int yy = y * yscale;
-            int i = yy * buf->width + xx;
-
-            ((uint32_t *)winsurf->pixels)[y * winwidth + x] = buf->pixels[i];
-        }
+    if (buf != lastbuf) {
+        lastbuf = buf;
+        SDL_FreeSurface(surf);
+        surf = SDL_CreateRGBSurfaceFrom(
+                buf->pixels,                                    // Pixels
+                buf->width, buf->height, 32, 4 * buf->width,    // Width, Height, Depth, Pitch
+                0xFF0000, 0x00FF00, 0x0000FF, 0                 // RGBA Masks
+                );
     }
 
+    SDL_BlitScaled(surf, NULL, winsurf, NULL);
     SDL_UpdateWindowSurface(win);
 }
 
 
 void S_MouseFix() {
+    int winwidth, winheight;
+    SDL_GetWindowSize(win, &winwidth, &winheight);
+
     if (grabmousef) {
         SDL_WarpMouseInWindow(win, winwidth / 2, winheight / 2);
     }
@@ -105,6 +104,9 @@ void S_MouseFix() {
 Vector S_GetMousePos(Buffer *buf) {
     int mx, my;
     SDL_GetMouseState(&mx, &my);
+
+    int winwidth, winheight;
+    SDL_GetWindowSize(win, &winwidth, &winheight);
 
     return (Vector){ mx * buf->width / winwidth, my * buf->height / winheight };
 }
