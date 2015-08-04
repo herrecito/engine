@@ -116,6 +116,18 @@ int G_PointInSegment(Segment s, Vector p);
 // Returns the minimum distance between point p and segment seg
 double G_SegmentPointDistance(Segment seg, Vector p);
 
+// Returns the center of segment s.
+Vector G_SegmentCenter(Segment s);
+
+// Returns segmented s translated by vector displacement d.
+Segment G_TranslateSegment(Segment s, Vector d);
+
+// Returns s rotated around its center.
+Segment G_RotateSegment(Segment s, double angle);
+
+// Returnss rotated around point.
+Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point);
+
 
 
 //------------------------------------------------------------------------------

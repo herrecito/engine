@@ -276,3 +276,29 @@ int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
 int G_PointInsideBox(Box b, Vector p) {
     return p.x < b.right && p.x > b.left && p.y < b.bottom && p.y > b.top;
 }
+
+
+Segment G_TranslateSegment(Segment s, Vector d) {
+    return (Segment){ .start = G_Sum(s.start, d), .end = G_Sum(s.end, d) };
+}
+
+
+Vector G_SegmentCenter(Segment s) {
+    return (Vector){ (s.start.x + s.end.x) / 2, (s.start.y + s.end.y) / 2 };
+}
+
+
+Segment G_RotateSegment(Segment s, double angle) {
+    return (Segment){
+        .start = G_Rotate(s.start, angle),
+        .end = G_Rotate(s.end, angle)
+    };
+}
+
+Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point) {
+    Segment temp = G_TranslateSegment(s, NVEC(point));
+
+    temp = G_RotateSegment(temp, angle);
+
+    return G_TranslateSegment(temp, point);
+}
