@@ -25,6 +25,12 @@ typedef struct {
 } Vector;
 
 
+// Vector equality
+#define VEQ(a, b) (ARECLOSE((a).x, (b).x) && ARECLOSE((a).y, (b).y))
+
+// -v
+#define NVEC(v) ((Vector){ -(v).x, -(v).y })
+
 // Returns a + b
 Vector G_Sum(Vector a, Vector b);
 
@@ -80,6 +86,9 @@ typedef struct {
 } Segment;
 
 
+// Segment equality
+#define SEGEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).end, (b).end))
+
 // Returns l.start - l.end (direction vector of the segment)
 Vector G_Direction(Segment l);
 
@@ -116,6 +125,11 @@ double G_SegmentPointDistance(Segment seg, Vector p);
 typedef struct {
     Vector start, dir;
 } Line;
+
+
+// Line equality
+#define LINEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).dir, (b).dir))
+
 
 
 //------------------------------------------------------------------------------

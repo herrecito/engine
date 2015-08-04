@@ -16,7 +16,4 @@
 #define SIGN(a) (ISZERO(a) ? 0 : (a) > 0 ? 1 : -1)
 #define MOD(a, b) ((((a) % (b)) + (b)) % (b))
 
-// Vector equality
-#define VEQ(a, b) (ARECLOSE((a).x, (b).x) && ARECLOSE((a).y, (b).y))
-
 #endif
