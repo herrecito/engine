@@ -4,23 +4,11 @@
 
 #include "geometry.h"
 #include "defs.h"
+#include "buffer.h"
 #include "system.h"
 #include "draw.h"
 #include "dbg.h"
 #include "color.h"
-
-
-//-----------------------------------------------------------------------------
-// Low Level
-//-----------------------------------------------------------------------------
-
-void D_DrawPixel(Buffer *b, int x, int y, uint32_t color) {
-    if (x >= 0 && x < b->width && y >= 0 && y < b->height) {
-        b->pixels[y * b->width + x] = color;
-    } else {
-        debug("Drawing outside the buffer!");
-    }
-}
 
 
 // Doom's version of Bresenham
@@ -39,7 +27,7 @@ void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, uint32_t color) {
     if (ax > ay) {
         int d = ay - ax / 2;
         while (1) {
-            D_DrawPixel(b, x, y, color);
+            B_SetPixel(b, x, y, color);
             if (x == x1) return;
 
             if (d >= 0) {
@@ -52,7 +40,7 @@ void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, uint32_t color) {
     } else {
         int d = ax - ay / 2;
         while (1) {
-            D_DrawPixel(b, x, y, color);
+            B_SetPixel(b, x, y, color);
             if (y == y1) return;
 
             if (d >= 0) {
@@ -66,19 +54,6 @@ void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, uint32_t color) {
 }
 
 
-
-void D_ClearBuffer(Buffer *b, uint32_t color) {
-    for (int i = 0; i < b->width * b->height; i++) {
-        b->pixels[i] = color;
-    }
-}
-
-
-
-
-//-----------------------------------------------------------------------------
-// High Level
-//-----------------------------------------------------------------------------
 
 void D_DrawSegment(Buffer *b, Segment l, uint32_t color) {
     D_DrawLine(b, l.start.x, l.start.y, l.end.x, l.end.y, color);

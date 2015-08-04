@@ -67,6 +67,7 @@ void Init() {
     S_Init("Engine", WIDTH*2, HEIGHT*2);
     S_GrabMouse(1);
     buffer = B_CreateBuffer(WIDTH, HEIGHT);
+    B_ClearBuffer(buffer, WHITE);
 
     // Player
     player.position = (Vector){ 25, 25 };
@@ -163,7 +164,7 @@ void DrawPOV() {
                     c = C_ScaleColor(c, FAR / distance);
                 }
 
-                D_DrawPixel(buffer, x, y, c);
+                B_SetPixel(buffer, x, y, c);
             }
         }
 
@@ -179,13 +180,13 @@ void DrawPOV() {
             if (texel_distance > FAR) {
                 color = C_ScaleColor(color, FAR / texel_distance);
             }
-            D_DrawPixel(buffer, x, HEIGHT - h, color);
+            B_SetPixel(buffer, x, HEIGHT - h, color);
 
             color = ceiltex->pixels[texel_y * ceiltex->width + texel_x];
             if (texel_distance > FAR) {
                 color = C_ScaleColor(color, FAR / texel_distance);
             }
-            D_DrawPixel(buffer, x, h - 1, color);
+            B_SetPixel(buffer, x, h - 1, color);
         }
     }
 }

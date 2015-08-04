@@ -216,7 +216,7 @@ void Quit() {
 
 
 void Draw() {
-    D_ClearBuffer(buffer, BLACK);
+    B_ClearBuffer(buffer, BLACK);
 
     D_DrawBox(buffer, viewport, RED);
 
