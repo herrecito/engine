@@ -80,10 +80,10 @@ void Init() {
     it = M_GetIterator(map);
 
     // Textures
-    flortex = S_LoadTexture("floor.bmp");
-    walltex = S_LoadTexture("wall.bmp");
-    ceiltex = S_LoadTexture("ceil.bmp");
-    numbers = S_LoadSprites("numbers.bmp", 1, 10);
+    flortex = S_LoadTexture("floor.png");
+    walltex = S_LoadTexture("wall.png");
+    ceiltex = S_LoadTexture("ceil.png");
+    numbers = S_LoadSprites("numbers.png", 1, 10);
 
 }
 
