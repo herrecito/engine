@@ -21,9 +21,10 @@ static int grabmousef;
 int HandleResize(void *userdata, SDL_Event *ev) {
     if (ev->type == SDL_WINDOWEVENT) {
         switch (ev->window.event) {
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
+            case SDL_WINDOWEVENT_RESIZED:
+                winwidth = ev->window.data1;
+                winheight = ev->window.data2;
                 winsurf = SDL_GetWindowSurface(win);
-                SDL_GetWindowSize(win, &winwidth, &winheight);
                 break;
         }
     }
