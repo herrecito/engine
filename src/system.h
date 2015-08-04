@@ -9,6 +9,7 @@
 
 #include "buffer.h"
 #include "geometry.h"
+#include "sprites.h"
 
 
 //------------------------------------------------------------------------------
@@ -60,5 +61,6 @@ void S_MouseFix();
 // Load the texture given by path.
 Buffer *S_LoadTexture(const char *path);
 
+Sprites *S_LoadSprites(const char *path, int rows, int cols);
 
 #endif

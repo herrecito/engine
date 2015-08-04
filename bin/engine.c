@@ -13,6 +13,7 @@
 #include "geometry.h"
 #include "map.h"
 #include "system.h"
+#include "sprites.h"
 
 
 // Video constants
@@ -54,6 +55,7 @@ Buffer *buffer;
 Buffer *walltex;
 Buffer *flortex;
 Buffer *ceiltex;
+Sprites *numbers;
 
 int grabf = 1;  // Grab mouse flag
 int mapf;       // Show map flag
@@ -81,6 +83,8 @@ void Init() {
     flortex = S_LoadTexture("floor.bmp");
     walltex = S_LoadTexture("wall.bmp");
     ceiltex = S_LoadTexture("ceil.bmp");
+    numbers = S_LoadSprites("numbers.bmp", 1, 10);
+
 }
 
 
@@ -109,7 +113,8 @@ void DrawPlayer() {
 
 
 void DrawMap() {
-    // TODO
+    B_BlitBuffer(buffer, numbers->sprites[3], 10, 10);
+    B_BlitBuffer(buffer, numbers->sprites[1], 22, 10);
 }
 
 

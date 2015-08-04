@@ -4,6 +4,7 @@
 #include "geometry.h"
 #include "buffer.h"
 #include "system.h"
+#include "sprites.h"
 #include "dbg.h"
 
 
@@ -161,4 +162,27 @@ Buffer *S_LoadTexture(const char *path) {
     SDL_FreeSurface(tex_surf);
 
     return t;
+}
+
+
+Sprites *S_LoadSprites(const char *path, int rows, int cols) {
+    Buffer *b = S_LoadTexture(path);
+
+    int s_w = b->width / cols;
+    int s_h = b->height / rows;
+
+    Sprites *s = malloc(sizeof(Sprites));
+    s->rows = rows;
+    s->cols = cols;
+    s->sprites = malloc(sizeof(Buffer *) * rows * cols);
+
+    for (int i = 0; i < cols; i++) {
+        for (int j = 0; j < rows; j++) {
+            Buffer *sprite = B_GetSubBuffer(b, i * s_w, j * s_h, s_w, s_h);
+
+            s->sprites[j * cols + i] = sprite;
+        }
+    }
+
+    return s;
 }
