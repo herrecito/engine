@@ -12,7 +12,7 @@ BINS=$(basename $(BIN_SOURCES))
 TEST_SOURCES=$(wildcard tests/*.c)
 TESTS=$(basename $(TEST_SOURCES))
 
-default: tags $(BINS) $(TESTS)
+default: tags $(BINS) runtests
 
 $(BINS): %: %.c $(OBJECTS)
 
@@ -27,4 +27,7 @@ tags: $(SOURCES) $(HEADERS) $(BIN_SOURCES) $(TEST_SOURCES)
 clean:
 	rm -f $(OBJECTS) $(BINS) $(TESTS) tags
 
-.PHONY: clean
+runtests: $(TESTS)
+	./runtests.sh
+
+.PHONY: clean runtests
