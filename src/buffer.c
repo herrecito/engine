@@ -28,7 +28,7 @@ void B_SetPixel(Buffer *b, int x, int y, uint32_t color) {
     if (x >= 0 && x < b->width && y >= 0 && y < b->height) {
         b->pixels[y * b->width + x] = color;
     } else {
-        debug("Drawing outside the buffer!");
+        debug("Drawing outside the buffer! (%d, %d)", x, y);
     }
 }
 

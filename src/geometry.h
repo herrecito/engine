@@ -93,9 +93,14 @@ typedef struct {
 Vector G_Direction(Segment l);
 
 // Splits a given line l at a given point p, stores the resulting
-// segments in a, b.
+// segments in a, b:
 //
-// Doesn't check that p is really over l.
+//              b.start b.end
+// a.start      a.end
+// ·------------·-------·
+// l.start      P       l.end
+//
+// Doesn't check that p is actually over l.
 void G_SplitSegment(Segment l, Vector p, Segment *a, Segment *b);
 
 // Returns > 0 if p is on the *right side of l, < 0 if on the left,
@@ -125,7 +130,7 @@ Segment G_TranslateSegment(Segment s, Vector d);
 // Returns s rotated around the origin of coordinates.
 Segment G_RotateSegment(Segment s, double angle);
 
-// Returnss rotated around point.
+// Returns s rotated around point.
 Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point);
 
 // Returns the nearest point to p over seg.
