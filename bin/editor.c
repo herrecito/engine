@@ -11,7 +11,6 @@
 #include "color.h"
 
 
-#define WALL_HEIGHT 64
 #define SNAP_DISTANCE 8
 
 //------------------------------------------------------------------------------
@@ -136,10 +135,9 @@ void Init() {
 
 
 
-void AddWall(Segment seg, int height) {
+void AddWall(Segment seg) {
     Wall *wall = malloc(sizeof(Wall));
     wall->seg = seg;
-    wall->height = height;
 
     UnshiftWallNode(&level, wall);
 }
@@ -179,12 +177,11 @@ void SaveLevel(const char *path) {
 
     WallNode *wn = level.first;
     while (wn) {
-        fprintf(f, "%f %f %f %f %d\n",
-                3*wn->wall->seg.start.x,
-                3*wn->wall->seg.start.y,
-                3*wn->wall->seg.end.x,
-                3*wn->wall->seg.end.y,
-                wn->wall->height);
+        fprintf(f, "%f %f %f %f\n",
+                wn->wall->seg.start.x,
+                wn->wall->seg.start.y,
+                wn->wall->seg.end.x,
+                wn->wall->seg.end.y);
 
         wn = wn->next;
     }
@@ -198,10 +195,9 @@ void LoadLevel(const char *path) {
     FILE *f = fopen(path, "r");
 
     Vector start, end;
-    int height;
-    while (fscanf(f, "%lf %lf %lf %lf %d",
-                &start.x, &start.y, &end.x, &end.y, &height) != EOF ) {
-        AddWall((Segment){ start, end }, height);
+    while (fscanf(f, "%lf %lf %lf %lf",
+                &start.x, &start.y, &end.x, &end.y) != EOF ) {
+        AddWall((Segment){ start, end });
     }
 }
 
@@ -252,7 +248,7 @@ void HandleLeftClick() {
     }
 
     if (loosef) {
-        AddWall((Segment){ loose, pos }, WALL_HEIGHT );
+        AddWall((Segment){ loose, pos });
         loosef = 0;
     } else {
         loose = pos;

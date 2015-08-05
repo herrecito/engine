@@ -48,7 +48,6 @@ struct {
 } player;
 
 Map *map;
-static MapIterator *it;
 
 Buffer *buffer;
 
@@ -77,7 +76,6 @@ void Init() {
 
     // Map
     map = M_Load("level.map");
-    it = M_GetIterator(map);
 
     // Textures
     flortex = S_LoadTexture("floor.png");
@@ -90,7 +88,6 @@ void Init() {
 
 void Quit() {
     S_Quit();
-    M_DeleteIterator(it);
     exit(1);
 }
 
@@ -135,8 +132,8 @@ void DrawPOV() {
         double distance = DBL_MAX;
         Vector hit;
 
-        M_GoBeforeFirst(it);
-        for (Wall *w = M_GetNext(it); w; w = M_GetNext(it)) {
+        for (int i = 0; i < map->numwalls; i++) {
+            Wall *w = &map->walls[i];
             Vector h;
             if (G_SegmentRayIntersection(w->seg, ray, &h)) {
                 double d = G_Distance(h, player.position);

@@ -5,9 +5,7 @@
 
 typedef struct {
     Segment seg;
-    int height;
 } Wall;
-
 
 typedef struct Map {
     char *name;
@@ -18,13 +16,6 @@ typedef struct Map {
 } Map;
 
 
-typedef struct MapIterator MapIterator;
-
 Map *M_Load(const char *path);
-
-MapIterator *M_GetIterator(Map *map);
-Wall *M_GetNext(MapIterator *it);
-void M_DeleteIterator(MapIterator *it);
-void M_GoBeforeFirst(MapIterator *it);
 
 #endif
