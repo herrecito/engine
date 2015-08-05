@@ -274,10 +274,10 @@ int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
 }
 
 int G_PointInsideBox(Box b, Vector p) {
-    int left = p.x > b.left || ARECLOSE(p.x, b.left);
-    int right = p.x < b.right || ARECLOSE(p.x, b.right);
-    int top = p.y > b.top || ARECLOSE(p.y, b.top);
-    int bottom = p.y < b.bottom || ARECLOSE(p.y, b.bottom);
+    int left = p.x > b.left || EQ(p.x, b.left);
+    int right = p.x < b.right || EQ(p.x, b.right);
+    int top = p.y > b.top || EQ(p.y, b.top);
+    int bottom = p.y < b.bottom || EQ(p.y, b.bottom);
     return left && right && top && bottom;
 }
 
@@ -326,10 +326,10 @@ enum Region {
 int FindRegion(Box rect, Vector p) {
     int code = 0;
 
-    if (p.y < rect.top && !ARECLOSE(p.y, rect.top)) code |= G_REGION_TOP;
-    if (p.y > rect.bottom && !ARECLOSE(p.y, rect.bottom)) code |= G_REGION_BOTTOM;
-    if (p.x > rect.right && !ARECLOSE(p.x, rect.right))  code |= G_REGION_RIGHT;
-    if (p.x < rect.left && !ARECLOSE(p.x, rect.left)) code |= G_REGION_LEFT;
+    if (p.y < rect.top && !EQ(p.y, rect.top)) code |= G_REGION_TOP;
+    if (p.y > rect.bottom && !EQ(p.y, rect.bottom)) code |= G_REGION_BOTTOM;
+    if (p.x > rect.right && !EQ(p.x, rect.right))  code |= G_REGION_RIGHT;
+    if (p.x < rect.left && !EQ(p.x, rect.left)) code |= G_REGION_LEFT;
 
     return code;
 }

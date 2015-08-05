@@ -47,7 +47,7 @@ char *test_cross_product() {
     double result = G_Cross(a, b);
     double expected = 7;
 
-    mu_assert(ARECLOSE(result, expected), "Cross product not equal");
+    mu_assert(EQ(result, expected), "Cross product not equal");
 
     return NULL;
 }

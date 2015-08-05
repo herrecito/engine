@@ -26,7 +26,7 @@ typedef struct {
 
 
 // Vector equality
-#define VEQ(a, b) (ARECLOSE((a).x, (b).x) && ARECLOSE((a).y, (b).y))
+#define VEQ(a, b) (EQ((a).x, (b).x) && EQ((a).y, (b).y))
 
 // -v
 #define NVEC(v) ((Vector){ -(v).x, -(v).y })

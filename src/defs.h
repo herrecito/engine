@@ -12,7 +12,7 @@
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define CLAMP(x, min, max) (MIN(MAX((x), (min)), (max)))
 #define ISZERO(f) (fabs((f)) < EPSILON ? 1 : 0)
-#define ARECLOSE(a, b) (ISZERO((a) - (b)))
+#define EQ(a, b) (ISZERO((a) - (b)))
 #define SIGN(a) (ISZERO(a) ? 0 : (a) > 0 ? 1 : -1)
 #define MOD(a, b) ((((a) % (b)) + (b)) % (b))
 
