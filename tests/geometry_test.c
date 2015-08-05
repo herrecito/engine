@@ -150,6 +150,7 @@ char *all_tests() {
     mu_run_test(test_cross_product);
     mu_run_test(test_translate_segment);
     mu_run_test(test_segment_center);
+    mu_run_test(test_rotate);
     mu_run_test(test_rotate_segment);
     mu_run_test(test_rotate_segment_around_point);
     mu_run_test(test_ray_line_intersection);
