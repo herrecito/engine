@@ -189,4 +189,10 @@ typedef struct {
 // Returns 1 if Point p is inside Box b, 0 otherwise.
 int G_PointInsideBox(Box b, Vector p);
 
+// Clips away the parts of the segment `in` outside of rect, if any.
+//
+// Returns 1 if part of the segment remains inside rect, storing it in out;
+// 0 otherwise.
+int G_ClipSegment(Segment in, Box rect, Segment *out);
+
 #endif

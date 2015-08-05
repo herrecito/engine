@@ -302,3 +302,103 @@ Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point) {
 
     return G_TranslateSegment(temp, point);
 }
+
+
+// Regions:
+//
+// 1001 | 1000 | 1010
+// -----|------|-----
+// 0001 | 0000 | 0010
+// -----|------|-----
+// 0101 | 0100 | 0110
+
+enum Region {
+    G_REGION_LEFT   = 1 << 0,
+    G_REGION_RIGHT  = 1 << 1,
+    G_REGION_BOTTOM = 1 << 2,
+    G_REGION_TOP    = 1 << 3,
+};
+
+int FindRegion(Box rect, Vector p) {
+    int code = 0;
+
+    if (p.y < rect.top && !ARECLOSE(p.y, rect.top)) code |= G_REGION_TOP;
+    if (p.y > rect.bottom && !ARECLOSE(p.y, rect.bottom)) code |= G_REGION_BOTTOM;
+    if (p.x > rect.right && !ARECLOSE(p.x, rect.right))  code |= G_REGION_RIGHT;
+    if (p.x < rect.left && !ARECLOSE(p.x, rect.left)) code |= G_REGION_LEFT;
+
+    return code;
+}
+
+
+// Cohen Sutherland inspired clipping.
+int G_ClipSegment(Segment in, Box rect, Segment *out) {
+    int start_region = FindRegion(rect, in.start);
+    int end_region = FindRegion(rect, in.end);
+
+    // Trivial accept
+    // Both endpoints inside rect.
+    if ((start_region | end_region) == 0) {
+        *out = in;
+        return 1;
+    }
+
+    // Trivial reject
+    // Both endpoints are on the same side of rect (e.g. both above)
+    if ((start_region & end_region)) return 0;
+
+    // No trivial case, let's clip.
+    Line left =   { .start = {rect.left, rect.top},    .dir = {0, 1} };
+    Line right =  { .start = {rect.right, rect.top},   .dir = {0, 1} };
+    Line bottom = { .start = {rect.left, rect.bottom}, .dir = {1, 0} };
+    Line top =    { .start = {rect.left, rect.top},    .dir = {1, 0} };
+
+    Segment new = in;
+
+    if (start_region & G_REGION_TOP) {
+        G_SegmentLineIntersection(new, top, &new.start);
+        start_region = FindRegion(rect, new.start);
+    } else if (start_region & G_REGION_BOTTOM) {
+        G_SegmentLineIntersection(new, bottom, &new.start);
+        start_region = FindRegion(rect, new.start);
+    }
+
+    if (start_region & G_REGION_LEFT) {
+        G_SegmentLineIntersection(new, left, &new.start);
+        start_region = FindRegion(rect, new.start);
+    } else if (start_region & G_REGION_RIGHT) {
+        G_SegmentLineIntersection(new, right, &new.start);
+        start_region = FindRegion(rect, new.start);
+    }
+
+    if (end_region & G_REGION_TOP) {
+        G_SegmentLineIntersection(new, top, &new.end);
+        end_region = FindRegion(rect, new.end);
+    } else if (end_region & G_REGION_BOTTOM) {
+        G_SegmentLineIntersection(new, bottom, &new.end);
+        end_region = FindRegion(rect, new.end);
+    }
+
+    if (end_region & G_REGION_LEFT) {
+        G_SegmentLineIntersection(new, left, &new.end);
+        end_region = FindRegion(rect, new.end);
+    } else if (end_region & G_REGION_RIGHT) {
+        G_SegmentLineIntersection(new, right, &new.end);
+        end_region = FindRegion(rect, new.end);
+    }
+
+    // Again
+
+    // Trivial accept
+    // Both endpoints inside rect.
+    if ((start_region | end_region) == 0) {
+        *out = new;
+        return 1;
+    }
+
+    // Trivial reject
+    // Both endpoints are on the same side of rect (e.g. both above)
+    if ((start_region & end_region)) return 0;
+
+    return 0;  // Shouldn't get here
+}
