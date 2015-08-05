@@ -122,7 +122,7 @@ Vector G_SegmentCenter(Segment s);
 // Returns segmented s translated by vector displacement d.
 Segment G_TranslateSegment(Segment s, Vector d);
 
-// Returns s rotated around its center.
+// Returns s rotated around the origin of coordinates.
 Segment G_RotateSegment(Segment s, double angle);
 
 // Returnss rotated around point.
@@ -151,22 +151,25 @@ typedef struct {
 // Calculates the intersection between a Segment and a Ray.
 //
 // Returns 1 if there's an intersection, 0 otherwise.
-// Stores the intersection point in p.
+// Stores the intersection point in intersection.
 int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection);
 
 // Calculates the intersection between a Segment and a Line.
 //
 // Returns 1 if there's an intersection, 0 otherwise.
-// Stores the intersection point in p.
+// Stores the intersection point in intersection.
 int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection);
 
 // Calculates the intersection between two Segments.
 //
 // Returns 1 if there's an intersection, 0 otherwise.
-// Stores the intersection point in p.
+// Stores the intersection point in intersection.
 int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 
-// TODO
+// Calculates the intersection between a Ray and a Line
+//
+// Returns 1 if there's an intersection, 0 otherwise.
+// Stores the intersection point in intersection.
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection);
 
 // Returns the nearest point to p over seg.

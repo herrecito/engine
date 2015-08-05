@@ -53,6 +53,22 @@ char *test_cross_product() {
 }
 
 
+char *test_ray_line_intersection() {
+    Line ray = { .start = {0, 0}, .dir = {1, 0} };
+    Line l = { .start = {2, 1}, .dir = {0, 1} };
+    Vector intersection = {2, 0};
+
+    Vector result;
+    mu_assert(G_RayLineIntersection(ray, l, &result),
+            "Detects the intersection");
+
+    mu_assert(VEQ(intersection, result),
+            "Correctly calculates the intersection")
+
+    return NULL;
+}
+
+
 char *test_rotate() {
     Vector a = { 1, 2 };
     double angle = PI / 2;
@@ -136,6 +152,7 @@ char *all_tests() {
     mu_run_test(test_segment_center);
     mu_run_test(test_rotate_segment);
     mu_run_test(test_rotate_segment_around_point);
+    mu_run_test(test_ray_line_intersection);
 
     return NULL;
 }
