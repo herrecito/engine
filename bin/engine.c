@@ -61,6 +61,7 @@ int mapf;       // Show map flag
 int walkf;      // Walk flag
 
 const Vector SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
+const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
 
 void Init() {
@@ -107,10 +108,19 @@ void DrawPlayer() {
 }
 
 
-
 void DrawMap() {
-    B_BlitBuffer(buffer, numbers->sprites[3], 10, 10);
-    B_BlitBuffer(buffer, numbers->sprites[1], 22, 10);
+    for (int i = 0; i < map->numwalls; i++) {
+        Wall *w = &map->walls[i];
+        Segment s = w->seg;
+
+        s = G_TranslateSegment(s, NVEC(player.position));
+        s = G_TranslateSegment(s, SCREEN_CENTER);
+
+        Segment cliped;
+        if (G_ClipSegment(s, SCREEN_BOX, &cliped)) {
+            D_DrawSegment(buffer, cliped, WHITE);
+        }
+    }
 }
 
 
