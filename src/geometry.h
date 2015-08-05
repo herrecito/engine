@@ -111,7 +111,7 @@ double G_GetSide(Segment l, Vector p);
 double G_GetSideSegment(Segment l, Segment a);
 
 // Returns 1 if p is over the segment s.
-int G_PointInSegment(Segment s, Vector p);
+int G_IsPointInSegment(Segment s, Vector p);
 
 // Returns the minimum distance between point p and segment seg
 double G_SegmentPointDistance(Segment seg, Vector p);
@@ -127,6 +127,9 @@ Segment G_RotateSegment(Segment s, double angle);
 
 // Returnss rotated around point.
 Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point);
+
+// Returns the nearest point to p over seg.
+Vector G_NearestPointOnSegment(Segment seg, Vector p);
 
 
 
@@ -171,9 +174,6 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 // Returns 1 if there's an intersection, 0 otherwise.
 // Stores the intersection point in intersection.
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection);
-
-// Returns the nearest point to p over seg.
-Vector G_NearestPointOnSegment(Segment seg, Vector p);
 
 
 

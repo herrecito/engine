@@ -151,7 +151,7 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
     }
 }
 
-int G_PointInSegment(Segment s, Vector p) {
+int G_IsPointInSegment(Segment s, Vector p) {
     Vector ab = G_Sub(s.end, s.start);
     Vector ap = G_Sub(p, s.start);
 
