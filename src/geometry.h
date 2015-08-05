@@ -187,6 +187,7 @@ typedef struct {
 
 
 // Returns 1 if Point p is inside Box b, 0 otherwise.
+// Points close to the box borders are considered to be inside.
 int G_PointInsideBox(Box b, Vector p);
 
 // Clips away the parts of the segment `in` outside of rect, if any.

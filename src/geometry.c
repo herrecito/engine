@@ -274,7 +274,11 @@ int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
 }
 
 int G_PointInsideBox(Box b, Vector p) {
-    return p.x < b.right && p.x > b.left && p.y < b.bottom && p.y > b.top;
+    int left = p.x > b.left || ARECLOSE(p.x, b.left);
+    int right = p.x < b.right || ARECLOSE(p.x, b.right);
+    int top = p.y > b.top || ARECLOSE(p.y, b.top);
+    int bottom = p.y < b.bottom || ARECLOSE(p.y, b.bottom);
+    return left && right && top && bottom;
 }
 
 
