@@ -1,4 +1,5 @@
 #include <math.h>
+#include <assert.h>
 #include <stdlib.h>
 
 #include "defs.h"
@@ -419,4 +420,45 @@ int G_ClipSegment(Segment in, Box rect, Segment *out) {
     if ((start_region & end_region)) return 0;
 
     return 0;  // Shouldn't get here
+}
+
+
+double G_LinePointDistance(Line l, Vector p) {
+    Line perpendicular = {
+        .start = p,
+        .dir = G_Perpendicular(l.dir)
+    };
+
+    Vector intersection;
+    int rc = G_LineLineIntersection(l, perpendicular, &intersection);
+
+    assert(rc == 1);
+
+    return G_Distance(p, intersection);
+}
+
+
+int G_LineLineIntersection(Line l1, Line l2, Vector *intersection) {
+    if (ISZERO(G_Cross(l1.dir, l2.dir))) {
+        return 0;  // Lines are parallel.
+    }
+
+    // Vector ab = G_Sub(l1.start, l2.start);  // Unused
+    Vector ba = G_Sub(l2.start, l1.start);
+    Vector v = l2.dir;
+    Vector w = l1.dir;
+
+    double s = G_Cross(ba, v) / G_Cross(w, v);
+    // double t = G_Cross(ab, w) / G_Cross(v, w);  // Unused
+
+    if (s >= 0) {
+        if (intersection) {
+            *intersection = G_Sum(l1.start, G_Scale(s, l1.dir));
+        }
+
+        return 1;
+    } else {
+        return 0;
+    }
+    return 0;
 }

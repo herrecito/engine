@@ -151,6 +151,10 @@ typedef struct {
 #define LINEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).dir, (b).dir))
 
 
+// Returns the perpendicular distance from p to l
+double G_LinePointDistance(Line l, Vector p);
+
+
 
 //------------------------------------------------------------------------------
 // Intersections
@@ -180,6 +184,12 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 // Stores the intersection point in intersection.
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection);
 
+// Calculates the intersection between two Lines
+//
+// Returns 1 if there's an intersection, 0 otherwise.
+// Stores the intersection point in intersection.
+int G_LineLineIntersection(Line l1, Line l2, Vector *intersection);
+
 
 
 //------------------------------------------------------------------------------
@@ -200,5 +210,6 @@ int G_PointInsideBox(Box b, Vector p);
 // Returns 1 if part of the segment remains inside rect, storing it in out;
 // 0 otherwise.
 int G_ClipSegment(Segment in, Box rect, Segment *out);
+
 
 #endif

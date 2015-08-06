@@ -74,6 +74,26 @@ char *test_ray_line_intersection() {
 
     return NULL;
 }
+
+
+char *test_line_line_intersection() {
+    Line l1 = { .start = {0, 0}, .dir = {1, 0} };
+    Line l2 = { .start = {0, 1}, .dir = {1, 0} };
+
+    mu_assert(G_LineLineIntersection(l1, l2, NULL) == 0,
+        "Works as expected when lines are parallel");
+
+    l1 = (Line){ .start = {0, 3}, .dir = {0, -1} };
+    l2 = (Line){ .start = {-1, 0}, .dir = {1, 0} };
+    Vector expected = {0, 0};
+
+    Vector result;
+    mu_assert(G_LineLineIntersection(l1, l2, &result),
+            "Detects the intersection");
+
+    mu_assert(VEQ(expected, result),
+            "Correctly calculates the intersection");
+
     return NULL;
 }
 
@@ -163,6 +183,7 @@ char *all_tests() {
     mu_run_test(test_rotate_segment);
     mu_run_test(test_rotate_segment_around_point);
     mu_run_test(test_ray_line_intersection);
+    mu_run_test(test_line_line_intersection);
 
     return NULL;
 }
