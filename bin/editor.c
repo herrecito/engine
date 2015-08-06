@@ -115,8 +115,6 @@ void ClearWallList(WallList *list) {
 
 Buffer *buffer;
 
-Box viewport;
-
 WallList level;
 
 Vector loose;  // The start point of a Wall under construction.
@@ -215,8 +213,6 @@ void Quit() {
 
 void Draw() {
     B_ClearBuffer(buffer, BLACK);
-
-    D_DrawBox(buffer, viewport, RED);
 
     WallNode *wn = level.first;
     while (wn) {
