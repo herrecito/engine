@@ -199,6 +199,8 @@ void LoadLevel(const char *path) {
                 &start.x, &start.y, &end.x, &end.y) != EOF ) {
         AddWall((Segment){ start, end });
     }
+
+    fclose(f);
 }
 
 

@@ -103,8 +103,8 @@ void DrawPlayer() {
         .end = G_Sum(SCREEN_CENTER, G_Scale(NEAR / cos(FOV / 2), G_Rotate(player.forward, -FOV / 2)))
     };
 
-    D_DrawSegment(buffer, s1, WHITE);
-    D_DrawSegment(buffer, s2, WHITE);
+    D_DrawSegment(buffer, s1, GREEN);
+    D_DrawSegment(buffer, s2, GREEN);
 }
 
 
@@ -121,6 +121,8 @@ void DrawMap() {
             D_DrawSegment(buffer, cliped, WHITE);
         }
     }
+
+    DrawPlayer();
 }
 
 
@@ -209,7 +211,6 @@ void Draw() {
 
     if (mapf) {
         DrawMap();
-        DrawPlayer();
     }
 
     S_Blit(buffer);
@@ -323,9 +324,11 @@ void Logic() {
         int vel = walkf ? VEL / 2 : VEL;
 
         Vector velocity = G_Scale(vel,
-                G_Sum(
-                    G_Scale(player.fwd, player.forward),
-                    G_Scale(player.strafe, side)
+                G_Normalize(
+                    G_Sum(
+                        G_Scale(player.fwd, player.forward),
+                        G_Scale(player.strafe, side)
+                        )
                     )
                 );
 
