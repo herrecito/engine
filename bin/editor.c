@@ -156,13 +156,10 @@ void DeleteWall(Wall *wall) {
 Wall *GetWallNearMouse() {
     Vector pos = S_GetMousePos(buffer);
 
-    WallNode *wn = level.first;
-    while (wn) {
+    for (WallNode *wn = level.first; wn; wn = wn->next) {
         if (G_SegmentPointDistance(wn->wall->seg, pos) < SNAP_DISTANCE) {
             return wn->wall;
         }
-
-        wn = wn->next;
     }
 
     return NULL;
@@ -173,15 +170,12 @@ Wall *GetWallNearMouse() {
 void SaveLevel(const char *path) {
     FILE *f = fopen(path, "w");
 
-    WallNode *wn = level.first;
-    while (wn) {
+    for (WallNode *wn = level.first; wn; wn = wn->next) {
         fprintf(f, "%f %f %f %f\n",
                 wn->wall->seg.start.x,
                 wn->wall->seg.start.y,
                 wn->wall->seg.end.x,
                 wn->wall->seg.end.y);
-
-        wn = wn->next;
     }
 
     fclose(f);
@@ -192,10 +186,10 @@ void LoadLevel(const char *path) {
 
     FILE *f = fopen(path, "r");
 
-    Vector start, end;
+    Segment seg;
     while (fscanf(f, "%lf %lf %lf %lf",
-                &start.x, &start.y, &end.x, &end.y) != EOF ) {
-        AddWall((Segment){ start, end });
+                &seg.start.x, &seg.start.y, &seg.end.x, &seg.end.y) != EOF ) {
+        AddWall(seg);
     }
 
     fclose(f);
@@ -214,8 +208,7 @@ void Quit() {
 void Draw() {
     B_ClearBuffer(buffer, BLACK);
 
-    WallNode *wn = level.first;
-    while (wn) {
+    for (WallNode *wn = level.first; wn; wn = wn->next) {
         uint32_t color;
         if (G_SegmentPointDistance(wn->wall->seg, S_GetMousePos(buffer)) < SNAP_DISTANCE) {
             color = RED;
@@ -224,8 +217,6 @@ void Draw() {
         }
 
         D_DrawSegment(buffer, wn->wall->seg, color);
-
-        wn = wn->next;
     }
 
     if (loosef) {
@@ -310,7 +301,7 @@ void Input() {
     }
 }
 
-int main(int argc, char **argv) {
+int main() {
     Init();
 
     while (1) {

@@ -10,19 +10,17 @@ Map *M_Load(const char *path) {
 
     FILE *f = fopen(path, "r");
 
-    Vector start, end;
+    Segment seg;
 
     int numwalls = 0;
     Wall *walls = NULL;
 
     int i = 0;
     while (fscanf(f, "%lf %lf %lf %lf",
-                &start.x, &start.y, &end.x, &end.y) != EOF)
+                &seg.start.x, &seg.start.y, &seg.end.x, &seg.end.y) != EOF)
     {
         walls = realloc(walls, ++numwalls * sizeof(Wall));
-        walls[i++] = (Wall){
-            .seg = (Segment){ start, end },
-        };
+        walls[i++] = (Wall){ .seg = seg, .seen = 0 };
     }
 
     fclose(f);
