@@ -98,6 +98,19 @@ char *test_line_line_intersection() {
 }
 
 
+char *test_line_point_distance() {
+    Line l1 = { .start = {0, 0}, .dir = {1, 0} };
+    Vector p = {0, 3};
+
+    double expected = 3;
+
+    mu_assert(EQ(expected, G_LinePointDistance(l1, p)),
+            "Correctly calculates the distance to the line");
+
+    return NULL;
+}
+
+
 char *test_rotate() {
     Vector a = { 1, 2 };
     double angle = PI / 2;
@@ -184,6 +197,7 @@ char *all_tests() {
     mu_run_test(test_rotate_segment_around_point);
     mu_run_test(test_ray_line_intersection);
     mu_run_test(test_line_line_intersection);
+    mu_run_test(test_line_point_distance);
 
     return NULL;
 }
