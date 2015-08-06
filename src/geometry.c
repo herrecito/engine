@@ -139,6 +139,10 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
     Vector ap = G_Sub(ray.start, seg.start);
     Vector r = ray.dir;
 
+    if (ISZERO(G_Cross(ab, r))) {
+        return 0;  // Segment and line are parallel.
+    }
+
     double t = G_Cross(ap, r) / G_Cross(ab, r);
     double s = G_Cross(ab, ap) / G_Cross(r, ab);
 
@@ -150,6 +154,7 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
         return 0;
     }
 }
+
 
 int G_IsPointInSegment(Segment s, Vector p) {
     Vector ab = G_Sub(s.end, s.start);
@@ -210,14 +215,14 @@ Vector G_NearestPointOnSegment(Segment seg, Vector p) {
 }
 
 
-// Calculate intersection between a Segment and a Line.
-//
-// Returns 1 if there's an intersection, 0 otherwise.
-// Stores the intersection point in p.
 int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection) {
     Vector ab = G_Sub(seg.end, seg.start);
     Vector ap = G_Sub(line.start, seg.start);
     Vector r = line.dir;
+
+    if (ISZERO(G_Cross(ab, r))) {
+        return 0;  // Segment and line are parallel.
+    }
 
     double t = G_Cross(ap, r) / G_Cross(ab, r);
 
@@ -235,6 +240,11 @@ int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection) {
 int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
     Vector ab = G_Sub(s1.end, s1.start);
     Vector cd = G_Sub(s2.end, s2.start);
+
+    if (ISZERO(G_Cross(ab, cd))) {
+        return 0;  // Segments are parallel.
+    }
+
     Vector ac = G_Sub(s2.start, s1.start);
     Vector ca = G_Sub(s1.start, s2.start);
 
@@ -254,6 +264,10 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
 
 
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
+    if (ISZERO(G_Cross(ray.dir, line.dir))) {
+        return 0;  // Ray and line are parallel.
+    }
+
     // Vector ab = G_Sub(ray.start, line.start);  // Unused
     Vector ba = G_Sub(line.start, ray.start);
     Vector v = line.dir;

@@ -65,6 +65,15 @@ char *test_ray_line_intersection() {
     mu_assert(VEQ(intersection, result),
             "Correctly calculates the intersection")
 
+
+    ray = (Line){ .start = {0, 0}, .dir = {1, 0} };
+    l   = (Line){ .start = {0, 1}, .dir = {1, 0} };
+
+    mu_assert(G_RayLineIntersection(ray, l, NULL) == 0,
+        "Works as expected when ray and line are parallel");
+
+    return NULL;
+}
     return NULL;
 }
 
