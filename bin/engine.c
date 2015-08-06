@@ -111,6 +111,8 @@ void DrawPlayer() {
 void DrawMap() {
     for (int i = 0; i < map->numwalls; i++) {
         Wall *w = &map->walls[i];
+        if (!w->seen) continue;
+
         Segment s = w->seg;
 
         s = G_TranslateSegment(s, NVEC(player.position));
@@ -160,6 +162,8 @@ void DrawPOV() {
         // Wall
         int col_height = 0;
         if (wall) {
+            wall->seen = 1;
+
             col_height = viewcos * WALLHEIGHT / distance;
             // Everything is *much* easier if col_height is even.
             if (col_height & 1) col_height++;

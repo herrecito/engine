@@ -5,6 +5,8 @@
 
 typedef struct {
     Segment seg;
+
+    int seen;
 } Wall;
 
 typedef struct Map {
