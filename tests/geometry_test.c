@@ -183,6 +183,26 @@ char *test_rotate_segment_around_point() {
 }
 
 
+char *test_normal() {
+    Line l = { .start = {0, 0}, . dir = {1, 0} };
+    Vector expected = {0, 1};
+
+    mu_assert(VEQ(G_Normal(l), expected), "It works as expected");
+
+    return NULL;
+}
+
+
+char *test_support_line() {
+    Segment seg = { {1, 1}, {2, 1} };
+    Line expected = { {1, 1}, {1, 0} };
+
+    mu_assert(LINEQ(G_SupportLine(seg), expected), "It works as expected");
+
+    return NULL;
+}
+
+
 char *all_tests() {
     mu_init();
 
@@ -198,6 +218,8 @@ char *all_tests() {
     mu_run_test(test_ray_line_intersection);
     mu_run_test(test_line_line_intersection);
     mu_run_test(test_line_point_distance);
+    mu_run_test(test_normal);
+    mu_run_test(test_support_line);
 
     return NULL;
 }

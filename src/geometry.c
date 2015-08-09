@@ -10,6 +10,7 @@ double G_Length(Vector v) {
     return sqrt(v.x * v.x + v.y * v.y);
 }
 
+
 double G_LengthSquared(Vector v) {
     return v.x * v.x + v.y * v.y;
 }
@@ -39,6 +40,7 @@ void G_SplitSegment(Segment l, Vector p, Segment *a, Segment *b) {
 double G_GetSide(Segment l, Vector p) {
     return G_Cross(G_Sub(l.end, l.start), G_Sub(p, l.start));
 }
+
 
 // Returns > 0 if a is on the *right side of l, < 0 if on the left, and 0 if a
 // crosses l;
@@ -75,9 +77,11 @@ Vector G_Rotate(Vector v, double angle) {
     return r;
 }
 
+
 double G_Cross(Vector a, Vector b) {
     return a.x * b.y - a.y * b.x;
 }
+
 
 Vector G_Normalize(Vector v) {
     double l = G_Length(v);
@@ -98,6 +102,7 @@ Vector G_Sub(Vector a, Vector b) {
 Vector G_Scale(double a, Vector v) {
     return (Vector){ a * v.x, a * v.y };
 }
+
 
 double G_Angle(Vector a, Vector b) {
     return asin(G_Cross(a, b) / (G_Length(a) * G_Length(b)));
@@ -238,6 +243,7 @@ int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection) {
     }
 }
 
+
 int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
     Vector ab = G_Sub(s1.end, s1.start);
     Vector cd = G_Sub(s2.end, s2.start);
@@ -288,6 +294,7 @@ int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
     }
 }
 
+
 int G_PointInsideBox(Box b, Vector p) {
     int left = p.x > b.left || EQ(p.x, b.left);
     int right = p.x < b.right || EQ(p.x, b.right);
@@ -313,6 +320,7 @@ Segment G_RotateSegment(Segment s, double angle) {
         .end = G_Rotate(s.end, angle)
     };
 }
+
 
 Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point) {
     Segment temp = G_TranslateSegment(s, NVEC(point));
@@ -451,14 +459,19 @@ int G_LineLineIntersection(Line l1, Line l2, Vector *intersection) {
     double s = G_Cross(ba, v) / G_Cross(w, v);
     // double t = G_Cross(ab, w) / G_Cross(v, w);  // Unused
 
-    if (s >= 0) {
-        if (intersection) {
-            *intersection = G_Sum(l1.start, G_Scale(s, l1.dir));
-        }
-
-        return 1;
-    } else {
-        return 0;
+    if (intersection) {
+        *intersection = G_Sum(l1.start, G_Scale(s, l1.dir));
     }
-    return 0;
+
+    return 1;
+}
+
+
+Line G_SupportLine(Segment seg) {
+    return (Line){ .start = seg.start, .dir = G_Sub(seg.end, seg.start) };
+}
+
+
+Vector G_Normal(Line l) {
+    return G_Normalize(G_Perpendicular(l.dir));
 }

@@ -57,8 +57,8 @@ double G_Distance(Vector a, Vector b);
 // Will return an angle between [-PI/2, PI/2]
 double G_Angle(Vector a, Vector b);
 
-
-// Transformations
+// Returns av
+Vector G_Scale(double a, Vector v);
 
 // Returns v / |v|
 Vector G_Normalize(Vector v);
@@ -68,9 +68,6 @@ Vector G_Rotate(Vector v, double angle);
 
 // Returns v rotated 90º clockwise
 Vector G_Perpendicular(Vector v);
-
-// Returns av
-Vector G_Scale(double a, Vector v);
 
 // Returns (a·b) b / |b| (a projected over the direction of b)
 Vector G_Project(Vector a, Vector b);
@@ -86,7 +83,7 @@ typedef struct {
 } Segment;
 
 
-// Segment equality
+// Segment equality.
 #define SEGEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).end, (b).end))
 
 // Returns l.start - l.end (direction vector of the segment)
@@ -147,18 +144,29 @@ typedef struct {
 } Line;
 
 
-// Line equality
+// Line equality.
 #define LINEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).dir, (b).dir))
 
-
-// Returns the perpendicular distance from p to l
+// Returns the perpendicular distance from p to l.
 double G_LinePointDistance(Line l, Vector p);
+
+// Returns the support line of seg. Doesn't check for zero length segments.
+Line G_SupportLine(Segment seg);
+
+// Returns a unit vector perpendicular to l.
+Vector G_Normal(Line l);
 
 
 
 //------------------------------------------------------------------------------
 // Intersections
 //------------------------------------------------------------------------------
+
+// Calculates the intersection between two Segments.
+//
+// Returns 1 if there's an intersection, 0 otherwise.
+// Stores the intersection point in intersection.
+int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 
 // Calculates the intersection between a Segment and a Ray.
 //
@@ -171,12 +179,6 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection);
 // Returns 1 if there's an intersection, 0 otherwise.
 // Stores the intersection point in intersection.
 int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection);
-
-// Calculates the intersection between two Segments.
-//
-// Returns 1 if there's an intersection, 0 otherwise.
-// Stores the intersection point in intersection.
-int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection);
 
 // Calculates the intersection between a Ray and a Line
 //
