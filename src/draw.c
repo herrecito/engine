@@ -54,11 +54,36 @@ void D_DrawLine(Buffer *b, int x0, int y0, int x1, int y1, uint32_t color) {
 }
 
 
+// https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+void D_DrawCircle(Buffer *b, int x0, int y0, int radius, uint32_t color) {
+    int x = radius;
+    int y = 0;
+    int decisionOver2 = 1 - x;  // Decision criterion divided by 2 evaluated at x=r, y=0
+
+    while (x >= y) {
+        B_SetPixel(b,  x + x0,  y + y0, color);
+        B_SetPixel(b,  y + x0,  x + y0, color);
+        B_SetPixel(b, -x + x0,  y + y0, color);
+        B_SetPixel(b, -y + x0,  x + y0, color);
+        B_SetPixel(b, -x + x0, -y + y0, color);
+        B_SetPixel(b, -y + x0, -x + y0, color);
+        B_SetPixel(b,  x + x0, -y + y0, color);
+        B_SetPixel(b,  y + x0, -x + y0, color);
+        y++;
+
+        if (decisionOver2 <= 0) {
+            decisionOver2 += 2 * y + 1;  // Change in decision criterion for y -> y+1
+        } else {
+            x--;
+            decisionOver2 += 2 * (y - x) + 1;  // Change for y -> y+1, x -> x-1
+        }
+    }
+}
+
 
 void D_DrawSegment(Buffer *b, Segment l, uint32_t color) {
     D_DrawLine(b, l.start.x, l.start.y, l.end.x, l.end.y, color);
 }
-
 
 
 void D_DrawBox(Buffer *buf, Box b, uint32_t color) {
