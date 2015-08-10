@@ -137,14 +137,12 @@ char *test_translate_segment() {
 }
 
 
-char *test_segment_center() {
+char *test_midpoint() {
     Vector a = { 1, 2 };
     Vector b = { -2, 3 };
-
-    Segment s = { a, b };
     Vector expected = { -0.5, 2.5 };
 
-    mu_assert(VEQ(G_SegmentCenter(s), expected), "Segment center not equal");
+    mu_assert(VEQ(G_Midpoint(a, b), expected), "Midpoint not equal");
 
     return NULL;
 }
@@ -203,6 +201,16 @@ char *test_support_line() {
 }
 
 
+char *test_is_point_on_segment() {
+    Segment seg = { {0, 0}, {2, 2} };
+    Vector on = {1, 1};
+
+    mu_assert(G_IsPointOnSegment(seg, on), "It works as expected");
+
+    return NULL;
+}
+
+
 char *all_tests() {
     mu_init();
 
@@ -211,7 +219,7 @@ char *all_tests() {
     mu_run_test(test_dot_product);
     mu_run_test(test_cross_product);
     mu_run_test(test_translate_segment);
-    mu_run_test(test_segment_center);
+    mu_run_test(test_midpoint);
     mu_run_test(test_rotate);
     mu_run_test(test_rotate_segment);
     mu_run_test(test_rotate_segment_around_point);
@@ -220,6 +228,7 @@ char *all_tests() {
     mu_run_test(test_line_point_distance);
     mu_run_test(test_normal);
     mu_run_test(test_support_line);
+    mu_run_test(test_is_point_on_segment);
 
     return NULL;
 }

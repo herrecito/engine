@@ -18,6 +18,8 @@
 
 //------------------------------------------------------------------------------
 // Vector
+//
+// Also used as: Point
 //------------------------------------------------------------------------------
 
 typedef struct {
@@ -29,7 +31,7 @@ typedef struct {
 #define VEQ(a, b) (EQ((a).x, (b).x) && EQ((a).y, (b).y))
 
 // -v
-#define NVEC(v) ((Vector){ -(v).x, -(v).y })
+#define N(v) ((Vector){ -(v).x, -(v).y })
 
 // Returns a + b
 Vector G_Sum(Vector a, Vector b);
@@ -72,6 +74,12 @@ Vector G_Perpendicular(Vector v);
 // Returns (a·b) b / |b| (a projected over the direction of b)
 Vector G_Project(Vector a, Vector b);
 
+// Returns 1 if a and b are parallel, 0 otherwise.
+int G_Parallel(Vector a, Vector b);
+
+// Returns the midpoint between a and b.
+Vector G_Midpoint(Vector a, Vector b);
+
 
 
 //------------------------------------------------------------------------------
@@ -86,8 +94,8 @@ typedef struct {
 // Segment equality.
 #define SEGEQ(a, b) (VEQ((a).start, (b).start) && VEQ((a).end, (b).end))
 
-// Returns l.start - l.end (direction vector of the segment)
-Vector G_Direction(Segment l);
+// Returns l.start - l.end
+Vector G_Dir(Segment l);
 
 // Splits a given line l at a given point p, stores the resulting
 // segments in a, b:
@@ -100,28 +108,22 @@ Vector G_Direction(Segment l);
 // Doesn't check that p is actually over l.
 void G_SplitSegment(Segment l, Vector p, Segment *a, Segment *b);
 
-// Returns > 0 if p is on the *right side of l, < 0 if on the left,
-// and 0 if p is over l.
-//
-// *The right of the vector l.start -> l.end
-double G_GetSide(Segment l, Vector p);
+// Returns 1 if p is over the segment s, 0 otherwise.
+int G_IsPointOnSegment(Segment s, Vector p);
 
-// Returns 1 if p is over the segment s.
-int G_IsPointInSegment(Segment s, Vector p);
-
-// Returns the minimum distance between point p and segment seg
+// Returns the minimum distance between point p and segment seg.
 double G_SegmentPointDistance(Segment seg, Vector p);
 
 // Returns the center of segment s.
-Vector G_SegmentCenter(Segment s);
+Vector G_Center(Segment s);
 
 // Returns segmented s translated by vector displacement d.
 Segment G_TranslateSegment(Segment s, Vector d);
 
-// Returns s rotated around the origin of coordinates.
+// Returns s rotated angle around the origin of coordinates.
 Segment G_RotateSegment(Segment s, double angle);
 
-// Returns s rotated around point.
+// Returns s rotated angle around point.
 Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point);
 
 // Returns the nearest point to p over seg.
@@ -131,6 +133,8 @@ Vector G_NearestPointOnSegment(Segment seg, Vector p);
 
 //------------------------------------------------------------------------------
 // Line
+//
+// Also used as: Ray
 //------------------------------------------------------------------------------
 
 typedef struct {
@@ -149,6 +153,12 @@ Line G_SupportLine(Segment seg);
 
 // Returns a unit vector perpendicular to l.
 Vector G_Normal(Line l);
+
+// Returns > 0 if p is on the *right side of l, < 0 if on the left,
+// and 0 if p is over l.
+//
+// *The right of the vector l.start -> l.end
+int G_Side(Line l, Vector p);
 
 
 

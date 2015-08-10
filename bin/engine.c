@@ -113,7 +113,7 @@ void DrawMap() {
 
         Segment s = w->seg;
 
-        s = G_TranslateSegment(s, NVEC(player.position));
+        s = G_TranslateSegment(s, N(player.position));
         s = G_TranslateSegment(s, SCREEN_CENTER);
 
         Segment cliped;

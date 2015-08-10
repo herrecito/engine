@@ -33,12 +33,8 @@ void G_SplitSegment(Segment l, Vector p, Segment *a, Segment *b) {
 }
 
 
-// Returns > 0 if p is on the *right side of l, < 0 if on the left,
-// and 0 if p is over l.
-//
-// *The right of the vector l.start -> l.end
-double G_GetSide(Segment l, Vector p) {
-    return G_Cross(G_Sub(l.end, l.start), G_Sub(p, l.start));
+int G_Side(Line l, Vector p) {
+    return SIGN(G_Cross(l.dir, G_Sub(p, l.start)));
 }
 
 
@@ -129,9 +125,7 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
     Vector ap = G_Sub(ray.start, seg.start);
     Vector r = ray.dir;
 
-    if (ISZERO(G_Cross(ab, r))) {
-        return 0;  // Segment and line are parallel.
-    }
+    if (G_Parallel(ab, r)) return 0;
 
     double t = G_Cross(ap, r) / G_Cross(ab, r);
     double s = G_Cross(ab, ap) / G_Cross(r, ab);
@@ -146,11 +140,11 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
 }
 
 
-int G_IsPointInSegment(Segment s, Vector p) {
+int G_IsPointOnSegment(Segment s, Vector p) {
     Vector ab = G_Sub(s.end, s.start);
     Vector ap = G_Sub(p, s.start);
 
-    if (!ISZERO(G_Cross(ab, ap))) return 0;
+    if (!G_Parallel(ab, ap)) return 0;
 
     double dot = G_Dot(ab, ap);
     if (dot < 0) return 0;
@@ -210,9 +204,7 @@ int G_SegmentLineIntersection(Segment seg, Line line, Vector *intersection) {
     Vector ap = G_Sub(line.start, seg.start);
     Vector r = line.dir;
 
-    if (ISZERO(G_Cross(ab, r))) {
-        return 0;  // Segment and line are parallel.
-    }
+    if (G_Parallel(ab, r)) return 0;
 
     double t = G_Cross(ap, r) / G_Cross(ab, r);
 
@@ -232,9 +224,7 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
     Vector ab = G_Sub(s1.end, s1.start);
     Vector cd = G_Sub(s2.end, s2.start);
 
-    if (ISZERO(G_Cross(ab, cd))) {
-        return 0;  // Segments are parallel.
-    }
+    if (G_Parallel(ab, cd)) return 0;
 
     Vector ac = G_Sub(s2.start, s1.start);
     Vector ca = G_Sub(s1.start, s2.start);
@@ -255,9 +245,7 @@ int G_SegmentSegmentIntersection(Segment s1, Segment s2, Vector *intersection) {
 
 
 int G_RayLineIntersection(Line ray, Line line, Vector *intersection) {
-    if (ISZERO(G_Cross(ray.dir, line.dir))) {
-        return 0;  // Ray and line are parallel.
-    }
+    if (G_Parallel(ray.dir, line.dir)) return 0;
 
     // Vector ab = G_Sub(ray.start, line.start);  // Unused
     Vector ba = G_Sub(line.start, ray.start);
@@ -293,8 +281,8 @@ Segment G_TranslateSegment(Segment s, Vector d) {
 }
 
 
-Vector G_SegmentCenter(Segment s) {
-    return (Vector){ (s.start.x + s.end.x) / 2, (s.start.y + s.end.y) / 2 };
+Vector G_Center(Segment s) {
+    return G_Midpoint(s.start, s.end);
 }
 
 
@@ -307,7 +295,7 @@ Segment G_RotateSegment(Segment s, double angle) {
 
 
 Segment G_RotateSegmentAroundPoint(Segment s, double angle, Vector point) {
-    Segment temp = G_TranslateSegment(s, NVEC(point));
+    Segment temp = G_TranslateSegment(s, N(point));
 
     temp = G_RotateSegment(temp, angle);
 
@@ -431,9 +419,7 @@ double G_LinePointDistance(Line l, Vector p) {
 
 
 int G_LineLineIntersection(Line l1, Line l2, Vector *intersection) {
-    if (ISZERO(G_Cross(l1.dir, l2.dir))) {
-        return 0;  // Lines are parallel.
-    }
+    if (G_Parallel(l1.dir, l2.dir)) return 0;
 
     // Vector ab = G_Sub(l1.start, l2.start);  // Unused
     Vector ba = G_Sub(l2.start, l1.start);
@@ -458,4 +444,13 @@ Line G_SupportLine(Segment seg) {
 
 Vector G_Normal(Line l) {
     return G_Normalize(G_Perpendicular(l.dir));
+}
+
+
+int G_Parallel(Vector a, Vector b) {
+    return ISZERO(G_Cross(a, b));
+}
+
+Vector G_Midpoint(Vector a, Vector b) {
+    return (Vector){(a.x + b.x) / 2, (a.y + b.y) / 2};
 }
