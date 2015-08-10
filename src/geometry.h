@@ -106,12 +106,6 @@ void G_SplitSegment(Segment l, Vector p, Segment *a, Segment *b);
 // *The right of the vector l.start -> l.end
 double G_GetSide(Segment l, Vector p);
 
-// Returns > 0 if a is on the *right side of l, < 0 if on the left,
-// and 0 if a crosses l.
-//
-// *The right of the vector l.start -> l.end
-double G_GetSideSegment(Segment l, Segment a);
-
 // Returns 1 if p is over the segment s.
 int G_IsPointInSegment(Segment s, Vector p);
 

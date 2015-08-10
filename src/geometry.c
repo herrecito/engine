@@ -42,22 +42,6 @@ double G_GetSide(Segment l, Vector p) {
 }
 
 
-// Returns > 0 if a is on the *right side of l, < 0 if on the left, and 0 if a
-// crosses l;
-//
-// *The right of the vector l.start -> l.end
-double G_GetSideSegment(Segment l, Segment a) {
-    double side_a_start = G_GetSide(l, a.start);
-    double side_a_end = G_GetSide(l, a.end);
-
-    if (SIGN(side_a_start) == SIGN(side_a_end)) {
-        return side_a_start;
-    } else {
-        return 0;
-    }
-}
-
-
 double G_Dot(Vector a, Vector b) {
     return a.x * b.x + a.y * b.y;
 }

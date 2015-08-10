@@ -54,7 +54,6 @@ Buffer *buffer;
 Buffer *walltex;
 Buffer *flortex;
 Buffer *ceiltex;
-Sprites *numbers;
 
 int grabf = 1;  // Grab mouse flag
 int mapf;       // Show map flag
@@ -82,7 +81,6 @@ void Init() {
     flortex = S_LoadTexture("floor.png");
     walltex = S_LoadTexture("wall.png");
     ceiltex = S_LoadTexture("ceil.png");
-    numbers = S_LoadSprites("numbers.png", 1, 10);
 }
 
 
