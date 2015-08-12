@@ -53,6 +53,29 @@ char *test_cross_product() {
 }
 
 
+char *test_project() {
+    Vector a = {2, 0};
+    Vector dir = {1, 0};
+    Vector expected = {2, 0};
+
+    mu_assert(VEQ(G_Project(a, dir), expected), "Works for trivial case");
+
+    a = (Vector){1, 0};
+    dir = (Vector){3, 0};
+    expected = (Vector){1, 0};
+
+    mu_assert(VEQ(G_Project(a, dir), expected), "Works for non unitary directions");
+
+    a = (Vector){-1, 0};
+    dir = (Vector){2, 0};
+    expected = (Vector){-1, 0};
+
+    mu_assert(VEQ(G_Project(a, dir), expected), "Works for negative vectors");
+
+    return NULL;
+}
+
+
 char *test_ray_line_intersection() {
     Line ray = { .start = {0, 0}, .dir = {1, 0} };
     Line l = { .start = {2, 1}, .dir = {0, 1} };
@@ -219,6 +242,7 @@ char *all_tests() {
     mu_run_test(test_dot_product);
     mu_run_test(test_cross_product);
     mu_run_test(test_translate_segment);
+    mu_run_test(test_project);
     mu_run_test(test_midpoint);
     mu_run_test(test_rotate);
     mu_run_test(test_rotate_segment);

@@ -71,7 +71,7 @@ Vector G_Rotate(Vector v, double angle);
 // Returns v rotated 90º clockwise
 Vector G_Perpendicular(Vector v);
 
-// Returns (a·b) b / |b| (a projected over the direction of b)
+// Returns a projected over the direction of b
 Vector G_Project(Vector a, Vector b);
 
 // Returns 1 if a and b are parallel, 0 otherwise.

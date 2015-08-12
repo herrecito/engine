@@ -44,7 +44,8 @@ double G_Dot(Vector a, Vector b) {
 
 
 Vector G_Project(Vector a, Vector b) {
-    return G_Scale(G_Dot(a, b), G_Normalize(b));
+    Vector dir = G_Normalize(b);
+    return G_Scale(G_Dot(a, dir), dir);
 }
 
 
