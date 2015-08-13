@@ -1,9 +1,11 @@
-#include <SDL.h>
+#include <assert.h>
 #include <float.h>
 #include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+
+#include <SDL.h>
 
 #include "buffer.h"
 #include "color.h"
@@ -12,34 +14,44 @@
 #include "draw.h"
 #include "geometry.h"
 #include "map.h"
-#include "system.h"
 #include "sprites.h"
+#include "system.h"
 
+//------------------------------------------------------------------------------
+// Constants
+//------------------------------------------------------------------------------
 
-// Video constants
+// Video
 #define WIDTH 320
 #define HEIGHT 200
-#define FOV (PI / 2.5)
-#define NEAR 10                                 // Near clip plane distance
-#define FAR 300
+#define FOV (PI / 2.5)                          // Horizontal Field of View
+#define NEAR 1                                  // Near clip plane distance
+#define FAR 300                                 // Far clip plane distance
 #define VIEW ((WIDTH / 2.0) / (tan(FOV / 2.0))) // Viewplane distance
-#define VFOV (atan2(HEIGHT / 2.0, VIEW))
-
+#define VFOV (atan2(HEIGHT / 2.0, VIEW))        // Vertical Field of View
 #define WALLHEIGHT 64
-#define POVHEIGHT (WALLHEIGHT / 2)
+#define POVHEIGHT (WALLHEIGHT / 2)  // Must be half the wall height.
+const Vector SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
+const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
-// Game constants
+// Engine
 #define TICKRATE 60
 #define TICKTIME (1000 / TICKRATE) // milliseconds
 #define FPS 60
 #define FRAMETIME (1000 / FPS)
 
-#define VEL 3
-#define VANG 0.1
-#define SENSITIVITY 0.002
+// Game
+#define VEL 3               // Movement speed
+#define VANG 0.1            // Turning speed
+#define SENSITIVITY 0.002   // Mouse sensitivity
+#define RADIUS 8            // Player radius
 
 
+
+//------------------------------------------------------------------------------
 // Globals
+//------------------------------------------------------------------------------
+
 struct {
     Vector position;
     Vector forward;
@@ -47,21 +59,26 @@ struct {
     int fwd, strafe, turn;
 } player;
 
-Map *map;
+Map *map;       // Current map
+Buffer *buffer; // Video buffer
 
-Buffer *buffer;
-
+// Textures
 Buffer *walltex;
 Buffer *flortex;
 Buffer *ceiltex;
 
-int grabf = 1;  // Grab mouse flag
-int mapf;       // Show map flag
-int walkf;      // Walk flag
+// Flags
+int grabf = 1;      // Mouse grabbing
+int mapf = 0;       // Automap
+int walkf = 0;      // Walk
+int fpsf = 1;       // Show FPS
+int fps_limitf = 1; // FPS limit
 
-const Vector SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
-const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
+
+//------------------------------------------------------------------------------
+// Engine code
+//------------------------------------------------------------------------------
 
 void Init() {
     // Window & buffer
@@ -72,7 +89,7 @@ void Init() {
 
     // Player
     player.position = (Vector){ 25, 25 };
-    player.forward = G_Normalize((Vector){ 1, 1 });
+    player.forward = G_Normalize((Vector){1, 1});
 
     // Map
     map = M_Load("level.map");
@@ -84,25 +101,9 @@ void Init() {
 }
 
 
-
 void Quit() {
     S_Quit();
-    exit(1);
-}
-
-
-void DrawPlayer() {
-    Segment s1 = {
-        .start = SCREEN_CENTER,
-        .end = G_Sum(SCREEN_CENTER, G_Scale(NEAR / cos(FOV / 2), G_Rotate(player.forward, FOV / 2)))
-    };
-    Segment s2 = {
-        .start = SCREEN_CENTER,
-        .end = G_Sum(SCREEN_CENTER, G_Scale(NEAR / cos(FOV / 2), G_Rotate(player.forward, -FOV / 2)))
-    };
-
-    D_DrawSegment(buffer, s1, GREEN);
-    D_DrawSegment(buffer, s2, GREEN);
+    exit(0);
 }
 
 
@@ -122,7 +123,18 @@ void DrawMap() {
         }
     }
 
-    DrawPlayer();
+    Segment s1 = {
+        .start = SCREEN_CENTER,
+        .end = G_Sum(SCREEN_CENTER, G_Scale(RADIUS, G_Rotate(player.forward, FOV / 2)))
+    };
+    Segment s2 = {
+        .start = SCREEN_CENTER,
+        .end = G_Sum(SCREEN_CENTER, G_Scale(RADIUS, G_Rotate(player.forward, -FOV / 2)))
+    };
+
+    D_DrawSegment(buffer, s1, GREEN);
+    D_DrawSegment(buffer, s2, GREEN);
+    D_DrawCircle(buffer, SCREEN_CENTER.x, SCREEN_CENTER.y, RADIUS, GREEN);
 }
 
 
@@ -207,7 +219,6 @@ void DrawPOV() {
 }
 
 
-
 void Draw() {
     DrawPOV();
 
@@ -217,7 +228,6 @@ void Draw() {
 
     S_Blit(buffer);
 }
-
 
 
 void Input() {
@@ -270,6 +280,10 @@ void Input() {
 
                     case '\t':
                         mapf = !mapf;
+                        break;
+
+                    case 'r':
+                        fpsf = !fpsf;
                         break;
 
                     case 'g':
@@ -341,7 +355,6 @@ void Logic() {
 }
 
 
-int FPS_LIMIT = 0;
 
 int main() {
     Init();
@@ -366,7 +379,7 @@ int main() {
         S_MouseFix();
 
         // Draw screen
-        if (FPS_LIMIT) {
+        if (fps_limitf) {
             if (SDL_GetTicks() - last_frame > FRAMETIME) {
                 last_frame = SDL_GetTicks();
 
@@ -381,14 +394,16 @@ int main() {
         }
 
         // FPS Counter
-        if (SDL_GetTicks() - last_second > 1000) {
-            last_second = SDL_GetTicks();
-            printf("FPS: %d\n", fps_counter);
-            fps_counter = 0;
+        if (fpsf) {
+            if (SDL_GetTicks() - last_second > 1000) {
+                last_second = SDL_GetTicks();
+                printf("FPS: %d\n", fps_counter);
+                fps_counter = 0;
+            }
         }
 
-        // Sleep if FPS_LIMIT and there's some time left.
-        if (FPS_LIMIT) {
+        // Sleep if FPS limit and there's some time left.
+        if (fps_limitf) {
             int free_time = TICKTIME - (SDL_GetTicks() - start);
             if (free_time > 10) {
                 SDL_Delay(1);  // Must assume it will sleep for 10ms;
