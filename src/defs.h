@@ -16,4 +16,8 @@
 #define SIGN(a) (ISZERO(a) ? 0 : (a) > 0 ? 1 : -1)
 #define MOD(a, b) ((((a) % (b)) + (b)) % (b))
 
+#if !defined(NULL)
+#define NULL ((void *)0)
+#endif
+
 #endif
