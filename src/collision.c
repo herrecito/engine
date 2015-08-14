@@ -188,32 +188,30 @@ int Co_CheckCollision(Map *map, Mobile mob, Vector *collision, double *t0) {
 //  direction and call again the collision subroutine until there are no
 //  collisions.
 Vector Co_Move(Map *map, Mobile mob) {
-    Mobile i = mob;
-
     for (int depth = 0; depth < MAXDEPTH; depth++) {
         // Mobile is not moving, return its position.
-        if (ISZERO(G_Length(i.vel))) return i.pos;
+        if (ISZERO(G_Length(mob.vel))) return mob.pos;
 
         Vector collision;
         double t0;
 
         // We don't collide with anything, just return pos + vel.
-        if (!Co_CheckCollision(map, i, &collision, &t0))
-            return G_Sum(i.pos, i.vel);
+        if (!Co_CheckCollision(map, mob, &collision, &t0))
+            return G_Sum(mob.pos, mob.vel);
 
         // We collide with something, update our mobile and check again.
 
         // Move all we can without colliding (a bit less)
-        i.pos = G_Sum(i.pos, G_Scale(t0 - DT, i.vel));
+        mob.pos = G_Sum(mob.pos, G_Scale(t0 - DT, mob.vel));
         // Calculate remaining velocity
-        Vector remaining_vel = G_Scale(1 - (t0 - DT), i.vel);
+        Vector remaining_vel = G_Scale(1 - (t0 - DT), mob.vel);
         // Calculate tangent to the mob circle at the collision point
-        Vector tangent = G_Perpendicular(G_Sub(collision, i.pos));
+        Vector tangent = G_Perpendicular(G_Sub(collision, mob.pos));
         // Project the remaining velocity over the tangent
-        i.vel = G_Project(remaining_vel, tangent);
+        mob.vel = G_Project(remaining_vel, tangent);
     }
 
     // If we recurse too many times (shouldn't happen) return the latest
-    // final position calculated.
-    return i.pos;
+    // position calculated.
+    return mob.pos;
 }
