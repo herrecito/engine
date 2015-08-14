@@ -8,6 +8,7 @@
 #include <SDL.h>
 
 #include "buffer.h"
+#include "collision.h"
 #include "color.h"
 #include "dbg.h"
 #include "defs.h"
@@ -53,7 +54,7 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 //------------------------------------------------------------------------------
 
 struct {
-    Vector position;
+    Vector pos;
     Vector forward;
 
     int fwd, strafe, turn;
@@ -88,7 +89,7 @@ void Init() {
     B_ClearBuffer(buffer, WHITE);
 
     // Player
-    player.position = (Vector){ 25, 25 };
+    player.pos = (Vector){25, 25};
     player.forward = G_Normalize((Vector){1, 1});
 
     // Map
@@ -114,7 +115,7 @@ void DrawMap() {
 
         Segment s = w->seg;
 
-        s = G_TranslateSegment(s, N(player.position));
+        s = G_TranslateSegment(s, N(player.pos));
         s = G_TranslateSegment(s, SCREEN_CENTER);
 
         Segment cliped;
@@ -146,7 +147,7 @@ void DrawPOV() {
         double nearcos = NEAR / ray_cos;
 
         Line ray = {
-            .start = player.position,
+            .start = player.pos,
             .dir = G_Rotate(player.forward, ray_angle)
         };
 
@@ -160,7 +161,7 @@ void DrawPOV() {
             Wall *w = &map->walls[i];
             Vector h;
             if (G_SegmentRayIntersection(w->seg, ray, &h)) {
-                double d = G_Distance(h, player.position);
+                double d = G_Distance(h, player.pos);
                 if (d < distance && d > nearcos) {
                     wall = w;
                     distance = d;
@@ -198,7 +199,7 @@ void DrawPOV() {
         // Floor & ceiling
         for (int h = (HEIGHT - col_height) / 2; h > 0; h--) {
             double texel_distance = (POVHEIGHT * viewcos) / ((HEIGHT / 2) - h);
-            Vector texel_world_pos = G_Sum(player.position, G_Scale(texel_distance, ray.dir));
+            Vector texel_world_pos = G_Sum(player.pos, G_Scale(texel_distance, ray.dir));
 
             int texel_x = MOD((int)texel_world_pos.x, flortex->width);
             int texel_y = MOD((int)texel_world_pos.y, flortex->height);
@@ -326,6 +327,25 @@ void Input() {
 }
 
 
+Vector GetPlayerVelocity() {
+    if (!player.fwd && !player.strafe) return (Vector){0, 0};
+
+    Vector side = G_Perpendicular(player.forward);
+
+    int vel = walkf ? VEL / 2 : VEL;
+
+    Vector velocity = G_Scale(vel,
+            G_Normalize(
+                G_Sum(
+                    G_Scale(player.fwd, player.forward),
+                    G_Scale(player.strafe, side)
+                    )
+                )
+            );
+
+    return velocity;
+}
+
 
 void Logic() {
     // Turning
@@ -334,26 +354,14 @@ void Logic() {
     }
 
     // Translation
-    if (player.fwd || player.strafe) {
-        Vector side = G_Perpendicular(player.forward);
+    Mobile playermob = {
+        .pos = player.pos,
+        .vel = GetPlayerVelocity(),
+        .radius = RADIUS
+    };
 
-        int vel = walkf ? VEL / 2 : VEL;
-
-        Vector velocity = G_Scale(vel,
-                G_Normalize(
-                    G_Sum(
-                        G_Scale(player.fwd, player.forward),
-                        G_Scale(player.strafe, side)
-                        )
-                    )
-                );
-
-        Vector end = G_Sum(player.position, velocity);
-
-        player.position = end;
-    }
+    player.pos = Co_Move(map, playermob);
 }
-
 
 
 int main() {
