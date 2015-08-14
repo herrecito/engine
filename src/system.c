@@ -151,8 +151,8 @@ Buffer *S_LoadTexture(const char *path) {
 
     Buffer *t = B_CreateBuffer(tex_surf->w, tex_surf->h);
 
-    for (int x = 0; x < tex_surf->w; x++) {
-        for (int y = 0; y < tex_surf->h; y++) {
+    for (int y = 0; y < tex_surf->h; y++) {
+        for (int x = 0; x < tex_surf->w; x++) {
             uint32_t pixel = GetPixel(tex_surf, x, y);
 
             uint8_t red, green, blue;
@@ -179,8 +179,8 @@ Sprites *S_LoadSprites(const char *path, int rows, int cols) {
     s->cols = cols;
     s->sprites = malloc(sizeof(Buffer *) * rows * cols);
 
-    for (int i = 0; i < cols; i++) {
-        for (int j = 0; j < rows; j++) {
+    for (int j = 0; j < rows; j++) {
+        for (int i = 0; i < cols; i++) {
             Buffer *sprite = B_GetSubBuffer(b, i * s_w, j * s_h, s_w, s_h);
 
             s->sprites[j * cols + i] = sprite;
