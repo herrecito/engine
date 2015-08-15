@@ -3,37 +3,37 @@
 #ifndef _minunit_h
 #define _minunit_h
 
+#define ANSI_COLOR_RED   "\x1b[31m"
+#define ANSI_COLOR_RESET "\x1b[0m"
+
 #include <stdio.h>
-#include <stdlib.h>
 
-#include "dbg.h"
-
-#define mu_init() char *message = NULL
-
-#define mu_assert(test, message) \
+#define mu_assert(test, message, ...) \
     if (!(test)) {\
-        log_err(message);\
-        return message;\
+        printf(ANSI_COLOR_RED);\
+        printf("\tInvalid assertion %s (%s:%d):\n", #test, __FILE__, __LINE__);\
+        printf("\t\"" message "\"\n", ##__VA_ARGS__);\
+        printf(ANSI_COLOR_RESET);\
+        return 1;\
     }
 
 #define mu_run_test(test) \
-        message = test();\
-        tests_run++;\
-        if (message) return message;
+    if (test()) {\
+        failures++;\
+        printf(ANSI_COLOR_RED);\
+        printf("\t%s failed.\n", #test);\
+        printf(ANSI_COLOR_RESET);\
+    }\
+    ntests++;\
 
-#define RUN_TESTS(name) \
+#define RUN_TESTS(tests) \
     int main(int argc, char **argv) {\
-        printf("RUNNING: %s\n", argv[0]);\
-        char *result = name();\
-        if (result != 0) {\
-            printf("TEST FAILED: %s\n", result);\
-        } else {\
-            printf("ALL TEST PASSED\n");\
-        }\
-        printf("Tests run: %d\n", tests_run);\
-        exit(result != 0);\
+        printf("Running %s ...\n", argv[0]);\
+        tests();\
+        printf("%d Tests, %d failures.\n\n", ntests, failures);\
     }
 
-int tests_run;
+static int ntests;
+static int failures;
 
 #endif

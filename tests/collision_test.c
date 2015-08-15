@@ -7,7 +7,7 @@
 #include "geometry.h"
 #include "map.h"
 
-char *test_check_point() {
+int test_check_point() {
     int CheckPoint(Vector p, Mobile mob, double *distance, double *t0);
 
     Vector point = {2, 0};
@@ -23,11 +23,11 @@ char *test_check_point() {
     mu_assert(EQ(distance, 2), "Gets the distance right");
     mu_assert(EQ(t0, 0.5), "Gets the time right");
 
-    return NULL;
+    return 0;
 }
 
 
-char *test_check_collision() {
+int test_check_collision() {
     Map m = {
         .name = "Test Map",
         .spawn = {0, 0},
@@ -60,17 +60,16 @@ char *test_check_collision() {
     mu_assert(VEQ(collision, expected_collision), "Gets the collision right");
     mu_assert(EQ(t0, expected_t0), "Gets the time right");
 
-    return NULL;
+    return 0;
 }
 
 
-char *all_tests() {
-    mu_init();
 
+int all_tests() {
     mu_run_test(test_check_point);
     mu_run_test(test_check_collision);
 
-    return NULL;
+    return 0;
 }
 
 RUN_TESTS(all_tests);
