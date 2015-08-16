@@ -25,11 +25,13 @@ void B_ClearBuffer(Buffer *b, uint32_t color) {
 
 
 void B_SetPixel(Buffer *b, int x, int y, uint32_t color) {
-    if (x >= 0 && x < b->width && y >= 0 && y < b->height) {
-        b->pixels[y * b->width + x] = color;
-    } else {
+#ifndef NDEBUG
+    if (!(x >= 0 && x < b->width && y >= 0 && y < b->height)) {
         debug("Drawing outside the buffer! (%d, %d)", x, y);
     }
+#endif
+
+    b->pixels[y * b->width + x] = color;
 }
 
 
@@ -44,8 +46,8 @@ Buffer *B_GetSubBuffer(Buffer *buf, int x, int y, int width, int height) {
 
     Buffer *b = B_CreateBuffer(width, height);
 
-    for (int i = 0; i < width; i++) {
-        for (int j = 0; j < height; j++) {
+    for (int j = 0; j < height; j++) {
+        for (int i = 0; i < width; i++) {
             B_SetPixel(b, i, j, B_GetPixel(buf, x + i, y + j));
         }
     }
@@ -55,9 +57,12 @@ Buffer *B_GetSubBuffer(Buffer *buf, int x, int y, int width, int height) {
 
 
 void B_BlitBuffer(Buffer *dest, Buffer *src, int x, int y) {
-    for (int i = 0; i < src->width; i++) {
-        for (int j = 0; j < src->height; j++) {
-            B_SetPixel(dest, i + x, j +y, B_GetPixel(src, i, j));
+    assert(x + src->width <= dest->width);
+    assert(y + src->height <= dest->height);
+
+    for (int j = 0; j < src->height; j++) {
+        for (int i = 0; i < src->width; i++) {
+            B_SetPixel(dest, i + x, j + y, B_GetPixel(src, i, j));
         }
     }
 }

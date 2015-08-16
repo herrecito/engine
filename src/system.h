@@ -28,8 +28,8 @@ void S_Quit();
 // Video
 //------------------------------------------------------------------------------
 
-// Toggle fullscreen.
-void S_ToggleFullcreen();
+// Set to 1 to set fullscreen.
+void S_Fullscreen(int flag);
 
 // Update the screen with the contents of buf.
 void S_Blit(Buffer *buf);

@@ -21,10 +21,8 @@ static int grabmousef;
 
 int HandleResize(void *userdata, SDL_Event *ev) {
     if (ev->type == SDL_WINDOWEVENT) {
-        switch (ev->window.event) {
-            case SDL_WINDOWEVENT_RESIZED:
-                winsurf = SDL_GetWindowSurface(win);
-                break;
+        if (ev->window.event == SDL_WINDOWEVENT_RESIZED) {
+            winsurf = SDL_GetWindowSurface(win);
         }
     }
 
@@ -33,14 +31,14 @@ int HandleResize(void *userdata, SDL_Event *ev) {
 
 
 
-void S_ToggleFullcreen() {
-    if (fullscreenf) {
-        SDL_SetWindowFullscreen(win, 0);
-    } else {
+void S_Fullscreen(int flag) {
+    if (flag) {
         SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    } else {
+        SDL_SetWindowFullscreen(win, 0);
     }
 
-    fullscreenf = !fullscreenf;
+    fullscreenf = flag;
 }
 
 

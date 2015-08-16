@@ -23,8 +23,8 @@
 //------------------------------------------------------------------------------
 
 // Video
-#define WIDTH 320
-#define HEIGHT 200
+#define WIDTH 640
+#define HEIGHT 400
 #define FOV (PI / 2.5)                          // Horizontal Field of View
 #define NEAR 1                                  // Near clip plane distance
 #define FAR 300                                 // Far clip plane distance
@@ -42,7 +42,7 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 #define FRAMETIME (1000 / FPS)
 
 // Game
-#define VEL 3               // Movement speed
+#define VEL 5               // Movement speed
 #define VANG 0.1            // Turning speed
 #define SENSITIVITY 0.002   // Mouse sensitivity
 #define RADIUS 8            // Player radius
@@ -55,7 +55,7 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
 struct {
     Vector pos;
-    Vector forward;
+    Vector forward;  // *Must* be a versor
 
     int fwd, strafe, turn;
 } player;
@@ -69,11 +69,12 @@ Buffer *flortex;
 Buffer *ceiltex;
 
 // Flags
-int grabf = 1;      // Mouse grabbing
-int mapf = 0;       // Automap
-int walkf = 0;      // Walk
-int fpsf = 1;       // Show FPS
-int fps_limitf = 1; // FPS limit
+int fps_limitf = 1;   // FPS limit
+int fpsf = 1;         // Show FPS
+int fullscreenff = 0; // Fullscreen
+int grabf = 1;        // Grab mouse
+int mapf = 0;         // Automap
+int walkf = 0;        // Walk
 
 
 
@@ -83,7 +84,7 @@ int fps_limitf = 1; // FPS limit
 
 void Init() {
     // Window & buffer
-    S_Init("Engine", WIDTH*2, HEIGHT*2);
+    S_Init("Engine", WIDTH, HEIGHT);
     S_GrabMouse(1);
     buffer = B_CreateBuffer(WIDTH, HEIGHT);
     B_ClearBuffer(buffer, WHITE);
@@ -244,7 +245,8 @@ void Input() {
             case SDL_KEYDOWN:
                 switch (ev.key.keysym.sym) {
                     case 'f':
-                        S_ToggleFullcreen();
+                        fullscreenff = !fullscreenff;
+                        S_Fullscreen(fullscreenff);
                         break;
 
                     case SDLK_LSHIFT:
@@ -420,7 +422,7 @@ int main() {
             if (free_time > 10) {
                 SDL_Delay(1);  // Must assume it will sleep for 10ms;
             } else if (free_time < 0) {
-                puts("Too slow!");
+                debug("Too slow!");
             }
         }
     }
