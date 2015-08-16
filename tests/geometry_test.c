@@ -52,6 +52,15 @@ int test_cross_product() {
     return 0;
 }
 
+int test_parallel() {
+    Vector a = {1, 0};
+    Vector b = {0.001, 0};
+
+    mu_assert(G_Parallel(a, b), "Works as expected");
+
+    return 0;
+}
+
 
 int test_project() {
     Vector a = {2, 0};
@@ -239,6 +248,7 @@ int all_tests() {
     mu_run_test(test_vector_sub);
     mu_run_test(test_dot_product);
     mu_run_test(test_cross_product);
+    mu_run_test(test_parallel);
     mu_run_test(test_translate_segment);
     mu_run_test(test_project);
     mu_run_test(test_midpoint);
