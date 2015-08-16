@@ -13,6 +13,7 @@
 #define LIGHTGREY 0x222222
 #define RED       0xFF0000
 #define WHITE     0xFFFFFF
+#define YELLOW    0xFFFF00
 
 #define GETR(c) (((c) >> 16) & 0xFF)
 #define GETG(c) (((c) >>  8) & 0xFF)
