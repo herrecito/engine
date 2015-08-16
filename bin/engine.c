@@ -360,7 +360,7 @@ void Logic() {
         .radius = RADIUS
     };
 
-    player.pos = Co_Move(map, playermob);
+    player.pos = Co_Move(map, playermob).pos;
 }
 
 

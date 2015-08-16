@@ -48,21 +48,14 @@ int test_check_collision() {
         .radius = 1
     };
 
-    Vector collision;
-    Vector expected_collision = {1, 0};
+    Collision c;
 
-    double t0;
-    double expected_t0 = 0;
-
-    mu_assert(Co_CheckCollision(&m, mob, &collision, &t0),
-            "Detects the collision");
-
-    mu_assert(VEQ(collision, expected_collision), "Gets the collision right");
-    mu_assert(EQ(t0, expected_t0), "Gets the time right");
+    mu_assert(Co_CheckCollision(&m, mob, &c), "Detects the collision");
+    mu_assert(VEQ(c.point, ((Vector){1, 0})), "Gets the collision right");
+    mu_assert(EQ(c.t0, 0), "Gets the time right");
 
     return 0;
 }
-
 
 
 int all_tests() {

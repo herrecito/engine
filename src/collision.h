@@ -15,24 +15,24 @@ typedef struct Mobile {
     double radius;
 } Mobile;
 
+// Contains information about a collision event.
+typedef struct Collision {
+    Mobile mob;         // Status of the Mobile before the time of the collision
+    Vector point;       // Point of collision
+    Wall *wall;         // Wall that got hit
+    double t0;          // Time to collision
+    double distance;    // Distance to collision
+} Collision;
 
-// Returns the final position of mob in map after handling collisions.
-Vector Co_Move(Map *map, Mobile mob);
+
+// Returns a Mobile representing the movement of mob in map after handling
+// collisions.
+Mobile Co_Move(Map *map, Mobile mob);
 
 // Checks if mob will hit anything in map.
 //
-// Returns 1 and stores the collision point and time to collision t0 if
-// there's a collision.
-//
-//                  mob.radius
-//                 <----------->
-// mob.pos
-// |                   mob.vel
-// +---------------+---------->+        t0 < [0, 1]
-//                 |           |
-//                 t0 mob.vel  collision
-//
+// Returns 1 and stores the collision info in collision if there's a collision.
 // Returns 0 otherwise.
-int Co_CheckCollision(Map *map, Mobile mob, Vector *collision, double *t0);
+int Co_CheckCollision(Map *map, Mobile mob, Collision *collision);
 
 #endif

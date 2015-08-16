@@ -1,12 +1,13 @@
 #include <float.h>
 #include <stdio.h>
+#include <assert.h>
 
 #include "collision.h"
 #include "defs.h"
 #include "geometry.h"
 #include "map.h"
 
-// We need to do check every segment, and keep the closest collision.
+// We need to do check every segment, and keep the earliest collision.
 //
 // # Collision against the interior of a segment
 //
@@ -86,132 +87,124 @@ int CheckPoint(Vector p, Mobile mob, double *distance, double *t0) {
 }
 
 
-int Co_CheckCollision(Map *map, Mobile mob, Vector *collision, double *t0) {
+int Co_CheckCollision(Map *map, Mobile mob, Collision *collision) {
     double v = G_Length(mob.vel);
 
     if (ISZERO(v)) return 0;
 
-    int collisionf = 0;
-    Vector temp_collision;
-    double temp_t0;
-    double temp_distance = DBL_MAX;
+    int collisions = 0;
+    Collision c = {
+        .mob = mob,
+        .t0 = DBL_MAX,
+    };
 
     for (int i = 0; i < map->numwalls; i++) {
         Wall *w = &map->walls[i];
         Segment s = w->seg;
         Line l = G_SupportLine(s);
         Vector normal = G_Normal(l);
+        double lp = G_LinePointDistance(l, mob.pos);
 
         // Skip if we are too far away from the line.
-        if (G_LinePointDistance(l, mob.pos) > v + mob.radius) continue;
+        if (lp > v + mob.radius) continue;
 
         // Skip if we are moving parallel to the line.
-        if (G_Parallel(mob.vel, l.dir)
-                && G_LinePointDistance(l, mob.pos) > mob.radius) continue;
+        if (G_Parallel(mob.vel, l.dir) && lp > mob.radius) continue;
 
         // Check for collision against the interior of the wall.
-        double t = (G_LinePointDistance(l, mob.pos) - mob.radius) /
-            fabs(G_Dot(mob.vel, normal));
+        double d, t = (lp - mob.radius) / fabs(G_Dot(mob.vel, normal));
         if (t >= 0 && t <= 1) {
             // We hit the support line.
-            int side = G_Side(l, mob.pos);
             Vector I = G_Sub(
                     G_Sum(mob.pos, G_Scale(t, mob.vel)),
-                    G_Scale(side * mob.radius, normal)
+                    G_Scale(G_Side(l, mob.pos) * mob.radius, normal)
                     );
 
             if (G_IsPointOnSegment(s, I)) {
                 // We hit the segment: we have a collision.
-                double d = G_Distance(mob.pos, I);
-                if (d < temp_distance) {
-                    collisionf = 1;
-                    temp_distance = d;
-                    temp_collision = I;
-                    temp_t0 = t;
+                d = G_Distance(mob.pos, I);
+                if (t < c.t0) {
+                    collisions++;
+                    c.point = I;
+                    c.t0 = t;
+                    c.wall = w;
+                    c.distance = d;
                 }
                 continue;
             }
         }
 
         // Check for collision against the start vertex.
-        double d;
-        int rc = CheckPoint(s.start, mob, &d, &t);
-        if (rc) {
+        if (CheckPoint(s.start, mob, &d, &t)) {
             // We hit the start vertex.
-            if (d < temp_distance) {
-                collisionf = 1;
-                temp_distance = d;
-                temp_collision = s.start;
-                temp_t0 = t;
+            if (t < c.t0) {
+                collisions++;
+                c.point = s.start;
+                c.t0 = t;
+                c.wall = w;
+                c.distance = d;
             }
             continue;
         }
 
         // Check for collision against the end vertex.
-        rc = CheckPoint(s.end, mob, &d, &t);
-        if (rc) {
+        if (CheckPoint(s.end, mob, &d, &t)) {
             // We hit the end vertex.
-            if (d < temp_distance) {
-                collisionf = 1;
-                temp_distance = d;
-                temp_collision = s.end;
-                temp_t0 = t;
+            if (t < c.t0) {
+                collisions++;
+                c.point = s.end;
+                c.t0 = t;
+                c.wall = w;
+                c.distance = d;
             }
             continue;
         }
     }
 
-
-    if (collisionf) {
-        if (collision) {
-            *collision = temp_collision;
-        }
-
-        if (t0) {
-            *t0 = temp_t0;
-        }
+    if (collisions && collision) {
+        *collision = c;
     }
 
-    return collisionf;
+    return collisions;
 }
 
 
-#define DT 0.05
-#define MAXDEPTH 5
-
-//  Once we have the collision point, we calculate the tangent to the mob
-//  circle at collision time. This will be the sliding direction.
-//
-//  We move the mob close to the point where it would collide.
-//
-//  We then project the remainder of the velocity vector over the sliding
-//  direction and call again the collision subroutine until there are no
-//  collisions.
-Vector Co_Move(Map *map, Mobile mob) {
-    for (int depth = 0; depth < MAXDEPTH; depth++) {
-        // Mobile is not moving, return its position.
-        if (ISZERO(G_Length(mob.vel))) return mob.pos;
-
-        Vector collision;
-        double t0;
-
-        // We don't collide with anything, just return pos + vel.
-        if (!Co_CheckCollision(map, mob, &collision, &t0))
-            return G_Sum(mob.pos, mob.vel);
-
-        // We collide with something, update our mobile and check again.
-
+Mobile MoveOnce(Map *map, Mobile mob) {
+    Collision c;
+    if (Co_CheckCollision(map, mob, &c)) {
         // Move all we can without colliding (a bit less)
-        mob.pos = G_Sum(mob.pos, G_Scale(t0 - DT, mob.vel));
+        mob.pos = G_Sum(mob.pos, G_Scale(CLAMP(c.t0 - EPSILON, 0, 1), mob.vel));
         // Calculate remaining velocity
-        Vector remaining_vel = G_Scale(1 - (t0 - DT), mob.vel);
+        Vector remaining_vel = G_Scale(CLAMP(1 - c.t0, 0, 1), mob.vel);
         // Calculate tangent to the mob circle at the collision point
-        Vector tangent = G_Perpendicular(G_Sub(collision, mob.pos));
+        Vector tangent = G_Perpendicular(G_Sub(c.point, mob.pos));
         // Project the remaining velocity over the tangent
         mob.vel = G_Project(remaining_vel, tangent);
+    } else {
+        mob.pos = G_Sum(mob.pos, mob.vel);
+        mob.vel = (Vector){0, 0};
     }
 
-    // If we recurse too many times (shouldn't happen) return the latest
-    // position calculated.
-    return mob.pos;
+    return mob;
+}
+
+#define DEPTH 3
+
+Mobile Co_Move(Map *map, Mobile mob) {
+    for (int d = 0; d < DEPTH; d++) {
+        if (ISZERO(G_Length(mob.vel))) return mob;
+
+        mob = MoveOnce(map, mob);
+    }
+
+    return mob;
+}
+
+
+void PrintCollision(Collision c) {
+    printf("Collision detected:\n");
+    printf("\t[pos: (%.2f, %.2f), vel: %.2f, r: %.2f] -> (%.2f, %.2f)\n",
+            c.mob.pos.x, c.mob.pos.y, G_Length(c.mob.vel), c.mob.radius,
+            c.point.x, c.point.y);
+    printf("\tWall: %p,\tt0: %.5f,\tdistance: %.5f\n", c.wall, c.t0, c.distance);
 }
