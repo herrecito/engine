@@ -16,7 +16,7 @@ double G_LengthSquared(Vector v) {
 }
 
 
-Vector G_Direction(Segment l) {
+Vector G_Dir(Segment l) {
     return (Vector){ l.end.x - l.start.x, l.end.y - l.end.x };
 }
 
@@ -163,7 +163,7 @@ double G_SegmentPointDistance(Segment seg, Vector p) {
 
     Line perpendicular = {
         .start = p,
-        .dir = G_Perpendicular(G_Direction(seg))
+        .dir = G_Perpendicular(G_Dir(seg))
     };
 
     Vector p_l;
@@ -181,7 +181,7 @@ Vector G_NearestPointOnSegment(Segment seg, Vector p) {
 
     Line perpendicular = {
         .start = p,
-        .dir = G_Perpendicular(G_Direction(seg))
+        .dir = G_Perpendicular(G_Dir(seg))
     };
 
     Vector p_l;
