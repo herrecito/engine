@@ -287,6 +287,10 @@ void Input() {
                         fpsf = !fpsf;
                         break;
 
+                    case 'e':
+                        fps_limitf = !fps_limitf;
+                        break;
+
                     case 'g':
                         grabf = !grabf;
                         S_GrabMouse(grabf);
