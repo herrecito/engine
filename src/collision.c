@@ -3,6 +3,7 @@
 #include <assert.h>
 
 #include "collision.h"
+#include "dbg.h"
 #include "defs.h"
 #include "geometry.h"
 #include "map.h"
@@ -173,9 +174,12 @@ Mobile MoveOnce(Map *map, Mobile mob) {
     Collision c;
     if (Co_CheckCollision(map, mob, &c)) {
         // Move all we can without colliding (a bit less)
-        mob.pos = G_Sum(mob.pos, G_Scale(CLAMP(c.t0 - EPSILON, 0, 1), mob.vel));
+        if (!ISZERO(c.t0)) {
+            mob.pos = G_Sum(mob.pos, G_Scale(c.t0 - EPSILON, mob.vel));
+        }
+
         // Calculate remaining velocity
-        Vector remaining_vel = G_Scale(CLAMP(1 - c.t0, 0, 1), mob.vel);
+        Vector remaining_vel = G_Scale(1 - (ISZERO(c.t0) ? 0 : c.t0), mob.vel);
         // Calculate tangent to the mob circle at the collision point
         Vector tangent = G_Perpendicular(G_Sub(c.point, mob.pos));
         // Project the remaining velocity over the tangent
@@ -188,11 +192,23 @@ Mobile MoveOnce(Map *map, Mobile mob) {
     return mob;
 }
 
+
 #define DEPTH 3
 
 Mobile Co_Move(Map *map, Mobile mob) {
+    Vector orig_vel = mob.vel;
+
     for (int d = 0; d < DEPTH; d++) {
         if (ISZERO(G_Length(mob.vel))) return mob;
+
+        // Return if the new velocity is against the original velocity.
+        // This avoids twitching in obtuse angle corners and the like.
+        // There must be a better solution; calculating the sliding sense as
+        // well as the direction and having it into acount when projecting the
+        // remaining velocity.
+        //
+        // But this hack is pretty OK.
+        if (G_Dot(orig_vel, mob.vel) < 0) return mob;
 
         mob = MoveOnce(map, mob);
     }
