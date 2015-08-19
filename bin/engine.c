@@ -42,7 +42,9 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 #define FRAMETIME (1000 / FPS)
 
 // Game
-#define VEL 5               // Movement speed
+#define VEL 6               // Max movement speed
+#define ACC 1.5             // Movement acceleration
+#define MU 0.2              // Friction
 #define VANG 0.1            // Turning speed
 #define SENSITIVITY 0.002   // Mouse sensitivity
 #define RADIUS 8            // Player radius
@@ -53,12 +55,15 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 // Globals
 //------------------------------------------------------------------------------
 
+// Player
 struct {
     Vector pos;
+    Vector vel;
     Vector forward;  // *Must* be a versor
-
-    int fwd, strafe, turn;
 } player;
+
+// Moving forward, strafing, turning?
+int fwd, strafe, turn;
 
 Map *map;       // Current map
 Buffer *buffer; // Video buffer
@@ -255,30 +260,30 @@ void Input() {
 
                     case SDLK_UP:
                     case 'w':
-                        player.fwd = 1;
+                        fwd = 1;
                         break;
 
                     case SDLK_DOWN:
                     case 's':
-                        player.fwd = -1;
+                        fwd = -1;
                         break;
 
                     case 'a':
-                        player.strafe= -1;
+                        strafe= -1;
                         break;
 
                     case 'h':
                     case SDLK_LEFT:
-                        player.turn = -1;
+                        turn = -1;
                         break;
 
                     case 'd':
-                        player.strafe = 1;
+                        strafe = 1;
                         break;
 
                     case 'l':
                     case SDLK_RIGHT:
-                        player.turn = 1;
+                        turn = 1;
                         break;
 
                     case '\t':
@@ -309,19 +314,19 @@ void Input() {
                     case SDLK_DOWN:
                     case 'w':
                     case 's':
-                        player.fwd = 0;
+                        fwd = 0;
                         break;
 
                     case 'a':
                     case 'd':
-                        player.strafe = 0;
+                        strafe = 0;
                         break;
 
                     case 'h':
                     case 'l':
                     case SDLK_RIGHT:
                     case SDLK_LEFT:
-                        player.turn = 0;
+                        turn = 0;
                         break;
 
                     case SDLK_LSHIFT:
@@ -333,36 +338,37 @@ void Input() {
 }
 
 
-Vector GetPlayerVelocity() {
-    if (!player.fwd && !player.strafe) return (Vector){0, 0};
+void Movement() {
+    // Turning
+    if (turn) {
+        player.forward = G_Rotate(player.forward, turn * VANG);
+    }
 
+    // Acceleration
     Vector side = G_Perpendicular(player.forward);
-
-    int vel = walkf ? VEL / 2 : VEL;
-
-    Vector velocity = G_Scale(vel,
-            G_Normalize(
-                G_Sum(
-                    G_Scale(player.fwd, player.forward),
-                    G_Scale(player.strafe, side)
-                    )
-                )
+    Vector a = G_SetLength(
+            G_Sum(
+                G_Scale(fwd,    player.forward),
+                G_Scale(strafe, side)
+                ),
+            walkf ? ACC/2 : ACC
             );
 
-    return velocity;
-}
+    if (fwd || strafe) {
+        player.vel = G_Sum(player.vel, a);
+    } else {
+        player.vel = G_Sub(player.vel, G_Scale(MU, player.vel));
+    }
 
-
-void Logic() {
-    // Turning
-    if (player.turn) {
-        player.forward = G_Rotate(player.forward, player.turn * VANG);
+    double v = walkf ? VEL/2 : VEL;
+    if (G_Length(player.vel) > v) {
+        player.vel = G_SetLength(player.vel, v);
     }
 
     // Translation
     Mobile playermob = {
         .pos = player.pos,
-        .vel = GetPlayerVelocity(),
+        .vel = player.vel,
         .radius = RADIUS
     };
 
@@ -386,7 +392,7 @@ int main() {
             last_tick = SDL_GetTicks();
 
             Input();
-            Logic();
+            Movement();
         }
 
         // Keep mouse inside window
