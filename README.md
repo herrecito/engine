@@ -1,3 +1,12 @@
+![Ingame](http://i.imgur.com/OmqTuLs.png)
+
+# Dependencies
+
+* SDL 2.0
+* SDL_image 2.0
+
+# Build
+
 If you want to take it for a spin, build with:
 
     make
