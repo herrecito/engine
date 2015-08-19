@@ -73,6 +73,9 @@ Buffer *walltex;
 Buffer *flortex;
 Buffer *ceiltex;
 
+SpriteSheet ascii;
+SpriteSheet pistol;
+
 // Flags
 int fps_limitf = 1;   // FPS limit
 int fpsf = 1;         // Show FPS
@@ -105,6 +108,9 @@ void Init() {
     flortex = S_LoadBuffer("floor.png");
     walltex = S_LoadBuffer("wall.png");
     ceiltex = S_LoadBuffer("ceil.png");
+
+    ascii = S_LoadSpriteSheet("ascii.png", 16, 16);
+    pistol = S_LoadSpriteSheet("pistol.png", 2, 3);
 }
 
 
@@ -129,6 +135,9 @@ void DrawMap() {
             D_DrawSegment(buffer, cliped, WHITE);
         }
     }
+
+    D_DrawText(buffer, ascii, 10, 10,
+            "Player pos: (%f, %f)", player.pos.x, player.pos.y);
 
     Segment s1 = {
         .start = SCREEN_CENTER,
@@ -226,8 +235,15 @@ void DrawPOV() {
 }
 
 
+void DrawGun() {
+    Buffer *p = SS_GetSprite(pistol, 0, 0);
+    B_BlitBuffer(buffer, p, 1.1 * SCREEN_CENTER.x, HEIGHT - p->height);
+}
+
+
 void Draw() {
     DrawPOV();
+    DrawGun();
 
     if (mapf) {
         DrawMap();
