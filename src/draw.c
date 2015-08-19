@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 
@@ -92,3 +93,26 @@ void D_DrawBox(Buffer *buf, Box b, uint32_t color) {
     D_DrawLine(buf, b.left, b.top, b.left, b.bottom, color);
     D_DrawLine(buf, b.right, b.top, b.right, b.bottom, color);
 }
+
+
+void D_DrawText(Buffer *b, SpriteSheet ascii, int x, int y, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+
+    char text[128] = "";
+    vsnprintf(text, 128, fmt, args);
+
+    va_end(args);
+
+    for (int i = 0; i < strlen(text); i++) {
+        unsigned char c = text[i];
+
+        int xx = c % 16;
+        int yy = c / 16;
+
+        Buffer *bitmap = SS_GetSprite(ascii, xx, yy);
+
+        B_BlitBuffer(b, bitmap, x + i * 8, y);
+    }
+}
+
