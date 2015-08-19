@@ -25,7 +25,7 @@ void B_ClearBuffer(Buffer *b, uint32_t color);
 // the given width and height.
 Buffer *B_GetSubBuffer(Buffer *buf, int x, int y, int width, int height);
 
-// Copies dest to src starting at (x,y) pixel of dest.
+// Copies src to dest starting at (x,y) pixel of dest.
 void B_BlitBuffer(Buffer *dest, Buffer *src, int x, int y);
 
 // Sets pixel (x,y) of b to color.
