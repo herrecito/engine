@@ -27,6 +27,6 @@ You'll need some textures and spritesheets:
 * ceil.png
 * floor.png
 * pistol.png
-* wal.png
+* wall.png
 
 You can find mine here: http://imgur.com/a/F2Cnu
