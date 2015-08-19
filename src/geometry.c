@@ -294,10 +294,12 @@ Vector G_Center(Segment s) {
 
 
 Segment G_RotateSegment(Segment s, double angle) {
-    return (Segment){
+    Segment r = {
         .start = G_Rotate(s.start, angle),
         .end = G_Rotate(s.end, angle)
     };
+
+    return r;
 }
 
 
