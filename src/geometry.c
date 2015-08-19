@@ -66,6 +66,7 @@ double G_Cross(Vector a, Vector b) {
 
 Vector G_Normalize(Vector v) {
     double l = G_Length(v);
+    if (ISZERO(l)) return (Vector){0, 0};
     return (Vector){ v.x / l, v.y / l };
 }
 
