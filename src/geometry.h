@@ -48,6 +48,9 @@ double G_Cross(Vector a, Vector b);
 // Returns the length of v
 double G_Length(Vector v);
 
+// Returns v with length l.
+Vector G_SetLength(Vector v, double l);
+
 // Returns the length squared of v
 double G_LengthSquared(Vector v);
 

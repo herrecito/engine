@@ -101,6 +101,11 @@ double G_Distance(Vector a, Vector b) {
 }
 
 
+Vector G_SetLength(Vector v, double l) {
+    return G_Scale(l, G_Normalize(v));
+}
+
+
 // Calculate intersection between a Segment and a Ray.
 //
 // Returns 1 if there's an intersection, 0 otherwise.
