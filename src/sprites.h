@@ -14,5 +14,6 @@ typedef struct SpriteSheet {
 
 
 Buffer *SS_GetSprite(SpriteSheet ss, int x, int y);
+void SS_DeleteSpriteSheet(SpriteSheet ss);
 
 #endif
