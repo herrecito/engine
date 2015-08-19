@@ -141,7 +141,7 @@ uint32_t GetPixel(SDL_Surface *surface, int x, int y) {
 }
 
 
-Buffer *S_LoadTexture(const char *path) {
+Buffer *S_LoadBuffer(const char *path) {
     SDL_Surface *tex_surf = IMG_Load(path);
     check(tex_surf,
             "Error loading texture. IMG_GetError(): %s\n", IMG_GetError());
@@ -166,7 +166,7 @@ Buffer *S_LoadTexture(const char *path) {
 
 
 SpriteSheet S_LoadSpriteSheet(const char *path, int rows, int cols) {
-    Buffer *b = S_LoadTexture(path);
+    Buffer *b = S_LoadBuffer(path);
 
     SpriteSheet ss = {
         .rows = rows,

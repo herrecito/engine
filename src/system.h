@@ -58,8 +58,8 @@ void S_MouseFix();
 // Resources
 //------------------------------------------------------------------------------
 
-// Load the texture given by path.
-Buffer *S_LoadTexture(const char *path);
+// Load the buffer given by path.
+Buffer *S_LoadBuffer(const char *path);
 
 SpriteSheet S_LoadSpriteSheet(const char *path, int rows, int cols);
 

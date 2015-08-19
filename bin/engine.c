@@ -102,9 +102,9 @@ void Init() {
     map = M_Load("level.map");
 
     // Textures
-    flortex = S_LoadTexture("floor.png");
-    walltex = S_LoadTexture("wall.png");
-    ceiltex = S_LoadTexture("ceil.png");
+    flortex = S_LoadBuffer("floor.png");
+    walltex = S_LoadBuffer("wall.png");
+    ceiltex = S_LoadBuffer("ceil.png");
 }
 
 
