@@ -1,14 +1,18 @@
 //------------------------------------------------------------------------------
-// Spritesheets
+// Sprite sheets
 //------------------------------------------------------------------------------
 #ifndef _SPRITES_
 #define _SPRITES_
 
 #include "buffer.h"
 
-typedef struct Sprites {
+typedef struct SpriteSheet {
     Buffer **sprites;
     int rows, cols;
-} Sprites;
+    int width, height;
+} SpriteSheet;
+
+
+Buffer *SS_GetSprite(SpriteSheet ss, int x, int y);
 
 #endif

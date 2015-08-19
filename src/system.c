@@ -4,7 +4,6 @@
 #include "geometry.h"
 #include "buffer.h"
 #include "system.h"
-#include "sprites.h"
 #include "dbg.h"
 
 
@@ -166,24 +165,28 @@ Buffer *S_LoadTexture(const char *path) {
 }
 
 
-Sprites *S_LoadSprites(const char *path, int rows, int cols) {
+SpriteSheet S_LoadSpriteSheet(const char *path, int rows, int cols) {
     Buffer *b = S_LoadTexture(path);
 
-    int s_w = b->width / cols;
-    int s_h = b->height / rows;
-
-    Sprites *s = malloc(sizeof(Sprites));
-    s->rows = rows;
-    s->cols = cols;
-    s->sprites = malloc(sizeof(Buffer *) * rows * cols);
+    SpriteSheet ss = {
+        .rows = rows,
+        .cols = cols,
+        .width =  b->width / cols,
+        .height = b->height / rows,
+        .sprites = malloc(sizeof(Buffer *) * rows * cols)
+    };
 
     for (int j = 0; j < rows; j++) {
         for (int i = 0; i < cols; i++) {
-            Buffer *sprite = B_GetSubBuffer(b, i * s_w, j * s_h, s_w, s_h);
+            Buffer *sprite = B_GetSubBuffer(
+                    b, i * ss.width, j * ss.height, ss.width, ss.height
+                    );
 
-            s->sprites[j * cols + i] = sprite;
+            ss.sprites[j * cols + i] = sprite;
         }
     }
 
-    return s;
+    B_DeleteBuffer(b);
+
+    return ss;
 }
