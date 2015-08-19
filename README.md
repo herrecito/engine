@@ -11,3 +11,13 @@ Create a map with:
 And run it with:
 
     ./bin/engine
+
+You'll need some textures and spritesheets:
+
+* ascii.png
+* ceil.png
+* floor.png
+* pistol.png
+* wal.png
+
+You can find mine here: http://imgur.com/a/F2Cnu
