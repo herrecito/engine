@@ -29,8 +29,6 @@ int test_check_point() {
 
 int test_check_collision() {
     Map m = {
-        .name = "Test Map",
-        .spawn = {0, 0},
         .numwalls = 1,
         .walls = malloc(sizeof(Wall))
     };

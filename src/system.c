@@ -14,7 +14,6 @@ static Buffer *lastbuf;
 static SDL_Surface *surf;
 
 // Flags
-static int fullscreenf;
 static int grabmousef;
 
 
@@ -29,24 +28,19 @@ int HandleResize(void *userdata, SDL_Event *ev) {
 }
 
 
-
 void S_Fullscreen(int flag) {
     if (flag) {
         SDL_SetWindowFullscreen(win, SDL_WINDOW_FULLSCREEN_DESKTOP);
     } else {
         SDL_SetWindowFullscreen(win, 0);
     }
-
-    fullscreenf = flag;
 }
-
 
 
 void S_GrabMouse(int flag) {
     SDL_SetRelativeMouseMode(flag);
     grabmousef = flag;
 }
-
 
 
 void S_Init(const char *title, int width, int height) {
@@ -97,7 +91,6 @@ void S_MouseFix() {
 }
 
 
-
 Vector S_GetMousePos(Buffer *buf) {
     int mx, my;
     SDL_GetMouseState(&mx, &my);
@@ -107,6 +100,7 @@ Vector S_GetMousePos(Buffer *buf) {
 
     return (Vector){ mx * buf->width / winwidth, my * buf->height / winheight };
 }
+
 
 // http://sdl.beuc.net/sdl.wiki/Pixel_Access
 uint32_t GetPixel(SDL_Surface *surface, int x, int y) {

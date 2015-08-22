@@ -10,9 +10,6 @@ typedef struct {
 } Wall;
 
 typedef struct Map {
-    char *name;
-    Vector spawn;
-
     Wall *walls;
     int numwalls;
 } Map;

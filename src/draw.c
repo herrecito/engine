@@ -95,7 +95,8 @@ void D_DrawBox(Buffer *buf, Box b, uint32_t color) {
 }
 
 
-void D_DrawText(Buffer *b, SpriteSheet ascii, int x, int y, const char *fmt, ...) {
+void
+D_DrawText(Buffer *b, SpriteSheet ascii, int x, int y, const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
 
@@ -115,4 +116,3 @@ void D_DrawText(Buffer *b, SpriteSheet ascii, int x, int y, const char *fmt, ...
         B_BlitBuffer(b, bitmap, x + i * 8, y);
     }
 }
-

@@ -5,28 +5,32 @@
 #include "dbg.h"
 #include "geometry.h"
 
-Map *M_Load(const char *path) {
+Map *CreateEmptyMap() {
     Map *map = malloc(sizeof(struct Map));
 
+    map->walls = NULL;
+    map->numwalls = 0;
+
+    return map;
+}
+
+
+Map *M_Load(const char *path) {
     FILE *f = fopen(path, "r");
 
+    Map *map = CreateEmptyMap();
+
     Segment seg;
-
-    int numwalls = 0;
-    Wall *walls = NULL;
-
-    int i = 0;
-    while (fscanf(f, "%lf %lf %lf %lf",
-                &seg.start.x, &seg.start.y, &seg.end.x, &seg.end.y) != EOF)
+    for (int i = 0;
+            fscanf(f, "%lf %lf %lf %lf",
+                &seg.start.x, &seg.start.y, &seg.end.x, &seg.end.y) != EOF;
+            i++)
     {
-        walls = realloc(walls, ++numwalls * sizeof(Wall));
-        walls[i++] = (Wall){ .seg = seg, .seen = 0 };
+        map->walls = realloc(map->walls, ++(map->numwalls) * sizeof(Wall));
+        map->walls[i] = (Wall){ .seg = seg, .seen = 0 };
     }
 
     fclose(f);
-
-    map->walls = walls;
-    map->numwalls = numwalls;
 
     return map;
 }
