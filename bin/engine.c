@@ -225,6 +225,9 @@ void DrawPOV() {
             }
             B_SetPixel(buffer, x, HEIGHT - h, color);
 
+            texel_x = MOD((int)texel_world_pos.x, ceiltex->width);
+            texel_y = MOD((int)texel_world_pos.y, ceiltex->height);
+
             color = ceiltex->pixels[texel_y * ceiltex->width + texel_x];
             if (texel_distance > FAR) {
                 color = C_ScaleColor(color, FAR / texel_distance);
