@@ -13,6 +13,7 @@ typedef struct SpriteSheet {
 } SpriteSheet;
 
 
+SpriteSheet SS_LoadSpriteSheet(const char *path, int rows, int cols);
 Buffer *SS_GetSprite(SpriteSheet ss, int x, int y);
 void SS_DeleteSpriteSheet(SpriteSheet ss);
 

@@ -9,7 +9,6 @@
 
 #include "buffer.h"
 #include "geometry.h"
-#include "sprites.h"
 
 
 //------------------------------------------------------------------------------
@@ -55,12 +54,11 @@ void S_MouseFix();
 
 
 //------------------------------------------------------------------------------
-// Resources
+// Image loading
 //------------------------------------------------------------------------------
 
-// Load the buffer given by path.
-Buffer *S_LoadBuffer(const char *path);
+// Load the image given by path into a Buffer.
+Buffer *S_LoadImage(const char *path);
 
-SpriteSheet S_LoadSpriteSheet(const char *path, int rows, int cols);
 
 #endif

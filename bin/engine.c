@@ -105,12 +105,12 @@ void Init() {
     map = M_Load("level.map");
 
     // Textures
-    flortex = S_LoadBuffer("floor.png");
-    walltex = S_LoadBuffer("wall.png");
-    ceiltex = S_LoadBuffer("ceil.png");
+    flortex = S_LoadImage("floor.png");
+    walltex = S_LoadImage("wall.png");
+    ceiltex = S_LoadImage("ceil.png");
 
-    ascii = S_LoadSpriteSheet("ascii.png", 16, 16);
-    pistol = S_LoadSpriteSheet("pistol.png", 2, 3);
+    ascii = SS_LoadSpriteSheet("ascii.png", 16, 16);
+    pistol = SS_LoadSpriteSheet("pistol.png", 2, 3);
 }
 
 
