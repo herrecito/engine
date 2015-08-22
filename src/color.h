@@ -6,15 +6,18 @@
 
 #include <stdint.h>
 
-#define BLACK     0x000000
-#define BLUE      0x0000FF
-#define GREEN     0x00FF00
-#define GREY      0x111111
-#define LIGHTGREY 0x222222
-#define RED       0xFF0000
-#define WHITE     0xFFFFFF
-#define YELLOW    0xFFFF00
-#define TRANSPARENT 0x00FFFF
+enum Color {
+    BLACK     = 0x000000,
+    BLUE      = 0x0000FF,
+    GREEN     = 0x00FF00,
+    GREY      = 0x111111,
+    LIGHTGREY = 0x222222,
+    RED       = 0xFF0000,
+    WHITE     = 0xFFFFFF,
+    YELLOW    = 0xFFFF00,
+
+    TRANSPARENT = 0x00FFFF
+};
 
 #define GETR(c) (((c) >> 16) & 0xFF)
 #define GETG(c) (((c) >>  8) & 0xFF)
