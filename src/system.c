@@ -163,3 +163,13 @@ Buffer *S_LoadImage(const char *path) {
 
     return t;
 }
+
+
+uint32_t S_GetTime() {
+    return SDL_GetTicks();
+}
+
+
+void S_Sleep(uint32_t ms) {
+    SDL_Delay(ms);
+}

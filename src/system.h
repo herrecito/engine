@@ -61,4 +61,16 @@ void S_MouseFix();
 Buffer *S_LoadImage(const char *path);
 
 
+
+//------------------------------------------------------------------------------
+// Time
+//------------------------------------------------------------------------------
+
+// Returns the time since S_Init() in milliseconds.
+uint32_t S_GetTime();
+
+// Sleep for at least ms milliseconds.
+// Count on a granularity of at least 10 millisecods.
+void S_Sleep(uint32_t ms);
+
 #endif

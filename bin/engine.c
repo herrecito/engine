@@ -398,17 +398,17 @@ void Movement() {
 int main() {
     Init();
 
-    uint32_t last_tick = SDL_GetTicks();
-    uint32_t last_second = SDL_GetTicks();
-    uint32_t last_frame = SDL_GetTicks();
+    uint32_t last_tick = S_GetTime();
+    uint32_t last_second = S_GetTime();
+    uint32_t last_frame = S_GetTime();
     int fps_counter = 0;
 
     while (1) {
-        uint32_t start = SDL_GetTicks();
+        uint32_t start = S_GetTime();
 
         // Run ticks
-        if (SDL_GetTicks() - last_tick > TICKTIME) {
-            last_tick = SDL_GetTicks();
+        if (S_GetTime() - last_tick > TICKTIME) {
+            last_tick = S_GetTime();
 
             Input();
             Movement();
@@ -419,8 +419,8 @@ int main() {
 
         // Draw screen
         if (fps_limitf) {
-            if (SDL_GetTicks() - last_frame > FRAMETIME) {
-                last_frame = SDL_GetTicks();
+            if (S_GetTime() - last_frame > FRAMETIME) {
+                last_frame = S_GetTime();
 
                 Draw();
 
@@ -434,8 +434,8 @@ int main() {
 
         // FPS Counter
         if (fpsf) {
-            if (SDL_GetTicks() - last_second > 1000) {
-                last_second = SDL_GetTicks();
+            if (S_GetTime() - last_second > 1000) {
+                last_second = S_GetTime();
                 printf("FPS: %d\n", fps_counter);
                 fps_counter = 0;
             }
@@ -443,9 +443,9 @@ int main() {
 
         // Sleep if FPS limit and there's some time left.
         if (fps_limitf) {
-            int free_time = TICKTIME - (SDL_GetTicks() - start);
+            int free_time = TICKTIME - (S_GetTime() - start);
             if (free_time > 10) {
-                SDL_Delay(1);  // Must assume it will sleep for 10ms;
+                S_Sleep(1);  // Must assume it will sleep for 10ms;
             } else if (free_time < 0) {
                 debug("Too slow!");
             }
