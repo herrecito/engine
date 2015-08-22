@@ -55,12 +55,7 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 // Globals
 //------------------------------------------------------------------------------
 
-// Player
-struct {
-    Vector pos;
-    Vector vel;
-    Vector forward;  // *Must* be a versor
-} player;
+Mobile player;
 
 // Moving forward, strafing, turning?
 int fwd, strafe, turn;
@@ -98,8 +93,12 @@ void Init() {
     B_ClearBuffer(buffer, WHITE);
 
     // Player
-    player.pos = (Vector){25, 25};
-    player.forward = G_Normalize((Vector){1, 1});
+    player = (Mobile){
+        .pos = (Vector){25, 25},
+        .vel = (Vector){0, 0},
+        .forward = G_Normalize((Vector){1, 1}),
+        .radius = RADIUS,
+    };
 
     // Map
     map = M_Load("level.map");
@@ -385,13 +384,7 @@ void Movement() {
     }
 
     // Translation
-    Mobile playermob = {
-        .pos = player.pos,
-        .vel = player.vel,
-        .radius = RADIUS
-    };
-
-    player.pos = Co_Move(map, playermob).pos;
+    player.pos = Co_Move(map, player).pos;
 }
 
 

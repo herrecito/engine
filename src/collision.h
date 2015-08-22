@@ -12,6 +12,7 @@
 typedef struct Mobile {
     Vector pos;
     Vector vel;
+    Vector forward;  // *Must* be a versor
     double radius;
 } Mobile;
 
