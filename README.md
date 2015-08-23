@@ -4,6 +4,7 @@
 
 * SDL 2.0
 * SDL_image 2.0
+* GLEW
 
 # Build
 
