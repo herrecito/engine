@@ -351,6 +351,10 @@ void Input() {
                         walkf = 0;
                 }
                 break;
+
+            case SDL_QUIT:
+                Quit();
+                break;
         }
     }
 }
