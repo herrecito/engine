@@ -10,7 +10,7 @@
 #include "system.h"
 #include "dbg.h"
 
-static const char *vertexSource = "#version 150 core\n"
+static const char *vertexSource = "#version 330 core\n"
 "\n"
 "in vec2 position;\n"
 "in vec2 texcoord;\n"
@@ -23,7 +23,7 @@ static const char *vertexSource = "#version 150 core\n"
 "    gl_Position = vec4(position, 0.0, 1.0);\n"
 "}";
 
-static const char *fragmentSource = "#version 150 core\n"
+static const char *fragmentSource = "#version 330 core\n"
 "\n"
 "in vec2 Texcoord;\n"
 "\n"
@@ -157,6 +157,9 @@ void S_Init(const char *title, int width, int height) {
     glLinkProgram(shaderProgram);
     glUseProgram(shaderProgram);
 
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
     // Vertex attributes
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
     glEnableVertexAttribArray(posAttrib);
@@ -167,6 +170,10 @@ void S_Init(const char *title, int width, int height) {
     glEnableVertexAttribArray(texAttrib);
     glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE,
             4 * sizeof(float), (void *)(2 * sizeof(float)));
+
+    // Clear with black
+    glClearColor(0, 0, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
 }
 
 
@@ -187,8 +194,6 @@ void S_Blit(Buffer *buf) {
             buf->pixels
             );
 
-    glClearColor(0, 0, 0, 1);
-    glClear(GL_COLOR_BUFFER_BIT);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(window);

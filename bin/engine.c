@@ -90,7 +90,6 @@ void Init() {
     S_Init("Engine", WIDTH, HEIGHT);
     S_GrabMouse(1);
     buffer = B_CreateBuffer(WIDTH, HEIGHT);
-    B_ClearBuffer(buffer, WHITE);
 
     // Player
     player = (Mobile){
