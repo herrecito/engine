@@ -11,7 +11,8 @@ Buffer *B_CreateBuffer(int width, int height) {
     b->width = width;
     b->height = height;
 
-    b->pixels = malloc(4 * width * height);
+    b->pixels = malloc(sizeof(uint32_t) * width * height);
+    memset(b->pixels, 0, sizeof(uint32_t) * width * height);
 
     return b;
 }

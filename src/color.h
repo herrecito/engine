@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// RGB color space
+// RGBA color space, although the alpha channel is not used.
 //------------------------------------------------------------------------------
 #ifndef _COLOR_
 #define _COLOR_
