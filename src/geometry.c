@@ -138,7 +138,9 @@ int G_SegmentRayIntersection(Segment seg, Line ray, Vector *intersection) {
     double s = G_Cross(ab, ap) / G_Cross(r, ab);
 
     if (t >= 0 && t <= 1 && s >= 0) {
-        *intersection = G_Sum(ray.start, G_Scale(s, r));
+        if (intersection) {
+            *intersection = G_Sum(ray.start, G_Scale(s, r));
+        }
 
         return 1;
     } else {
@@ -347,7 +349,10 @@ int G_ClipSegment(Segment in, Box rect, Segment *out) {
     // Trivial accept
     // Both endpoints inside rect.
     if ((start_region | end_region) == 0) {
-        *out = in;
+        if (out) {
+            *out = in;
+        }
+
         return 1;
     }
 
@@ -400,7 +405,9 @@ int G_ClipSegment(Segment in, Box rect, Segment *out) {
     // Trivial accept
     // Both endpoints inside rect.
     if ((start_region | end_region) == 0) {
-        *out = new;
+        if (out) {
+            *out = new;
+        }
         return 1;
     }
 
