@@ -4,10 +4,12 @@
 #include <math.h>
 
 // Math constants
-#define PI 3.14159265359
+#define PI M_PI
 #define EPSILON 0.000001
 
 // Utils
+#define RAD2DEG(x) ((x) * 180.0 / PI)
+#define DEG2RAD(x) ((x) * PI / 180.0)
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 #define CLAMP(x, min, max) (MIN(MAX((x), (min)), (max)))

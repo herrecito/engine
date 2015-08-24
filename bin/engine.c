@@ -25,7 +25,7 @@
 // Video
 #define WIDTH 640
 #define HEIGHT 400
-#define FOV (PI / 2.5)                          // Horizontal Field of View
+#define FOV DEG2RAD(75)                         // Horizontal Field of View
 #define NEAR 1                                  // Near clip plane distance
 #define FAR 300                                 // Far clip plane distance
 #define VIEW ((WIDTH / 2.0) / (tan(FOV / 2.0))) // Viewplane distance
