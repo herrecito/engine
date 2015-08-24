@@ -65,7 +65,7 @@ double G_Angle(Vector a, Vector b);
 // Returns av
 Vector G_Scale(double a, Vector v);
 
-// Returns v / |v|
+// Returns v / |v|. If |v| = 0 returns {0, 0}.
 Vector G_Normalize(Vector v);
 
 // Returns v rotated angle radians clockwise
