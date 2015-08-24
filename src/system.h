@@ -30,8 +30,8 @@ void S_Quit();
 // Set to 1 to set fullscreen.
 void S_Fullscreen(int flag);
 
-// Update the screen with the contents of buf.
-void S_Blit(Buffer *buf);
+// Update the screen with the contents of buf. Returns the time it took in ms.
+uint32_t S_Blit(Buffer *buf);
 
 
 

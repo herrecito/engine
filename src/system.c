@@ -184,7 +184,9 @@ void S_Quit() {
 }
 
 
-void S_Blit(Buffer *buf) {
+uint32_t S_Blit(Buffer *buf) {
+    uint32_t start = S_GetTime();
+
     glTexSubImage2D(
             GL_TEXTURE_2D,
             0, 0,
@@ -197,6 +199,8 @@ void S_Blit(Buffer *buf) {
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
     SDL_GL_SwapWindow(window);
+
+    return S_GetTime() - start;
 }
 
 
