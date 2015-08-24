@@ -3,7 +3,6 @@
 
 #include "buffer.h"
 #include "color.h"
-#include "dbg.h"
 
 Buffer *B_CreateBuffer(int width, int height) {
     Buffer *b = malloc(sizeof(Buffer));
@@ -22,17 +21,6 @@ void B_ClearBuffer(Buffer *b, uint32_t color) {
     for (int i = 0; i < b->width * b->height; i++) {
         b->pixels[i] = color;
     }
-}
-
-
-void B_SetPixel(Buffer *b, int x, int y, uint32_t color) {
-#ifndef NDEBUG
-    if (!(x >= 0 && x < b->width && y >= 0 && y < b->height)) {
-        debug("Drawing outside the buffer! (%d, %d)", x, y);
-    }
-#endif
-
-    b->pixels[y * b->width + x] = color;
 }
 
 

@@ -4,6 +4,7 @@
 #ifndef _BUFFER_
 #define _BUFFER_
 
+#include "dbg.h"
 #include "color.h"
 
 typedef struct Buffer {
@@ -29,7 +30,15 @@ Buffer *B_GetSubBuffer(Buffer *buf, int x, int y, int width, int height);
 void B_BlitBuffer(Buffer *dest, Buffer *src, int x, int y);
 
 // Sets pixel (x,y) of b to color.
-void B_SetPixel(Buffer *b, int x, int y, uint32_t color);
+static inline void B_SetPixel(Buffer *b, int x, int y, uint32_t color) {
+#ifndef NDEBUG
+    if (!(x >= 0 && x < b->width && y >= 0 && y < b->height)) {
+        debug("Drawing outside the buffer! (%d, %d)", x, y);
+    }
+#endif
+
+    b->pixels[y * b->width + x] = color;
+}
 
 // Returns the color of pixel (x,y) of b.
 uint32_t B_GetPixel(Buffer *b, int x, int y);

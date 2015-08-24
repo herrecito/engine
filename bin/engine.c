@@ -79,13 +79,24 @@ int grabf = 1;        // Grab mouse
 int mapf = 0;         // Automap
 int walkf = 0;        // Walk
 
+// Look-Up Tables
+double ray_angle_lut[WIDTH];
 
 
 //------------------------------------------------------------------------------
 // Engine code
 //------------------------------------------------------------------------------
 
+void InitLUT() {
+    for (int x = 0; x < WIDTH; x++) {
+        ray_angle_lut[x] = atan2((x + 0.5) - (WIDTH / 2), VIEW);
+    }
+}
+
+
 void Init() {
+    InitLUT();
+
     // Window & buffer
     S_Init("Engine", WIDTH, HEIGHT);
     S_GrabMouse(1);
@@ -154,7 +165,7 @@ void DrawMap() {
 
 void DrawPOV() {
     for (int x = 0; x < WIDTH; x++) {
-        double ray_angle = atan2((x + 0.5) - (WIDTH / 2), VIEW);
+        double ray_angle = ray_angle_lut[x];
         double ray_cos = cos(ray_angle);
         double viewcos = VIEW / ray_cos;
         double nearcos = NEAR / ray_cos;
