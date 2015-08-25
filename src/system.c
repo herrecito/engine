@@ -3,7 +3,6 @@
 
 #include <SDL.h>
 #include <SDL_image.h>
-#include <SDL_opengl.h>
 
 #include "geometry.h"
 #include "buffer.h"
@@ -39,6 +38,7 @@ static SDL_Window *window;
 static SDL_GLContext glcontext;
 
 // Flags
+static int resizef;
 
 
 void S_Fullscreen(int flag) {
@@ -57,8 +57,8 @@ void S_GrabMouse(int flag) {
 
 int HandleResize(void *userdata, SDL_Event *ev) {
     if (ev->type == SDL_WINDOWEVENT) {
-        if (ev->window.event == SDL_WINDOWEVENT_RESIZED) {
-            glViewport(0, 0, ev->window.data1, ev->window.data2);
+        if (ev->window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+            resizef = 1;
         }
     }
 
@@ -184,6 +184,15 @@ void S_Quit() {
 
 uint32_t S_Blit(Buffer *buf) {
     uint32_t start = S_GetTime();
+
+    if (resizef) {
+        resizef = 0;
+
+        int winwidth, winheight;
+        SDL_GetWindowSize(window, &winwidth, &winheight);
+
+        glViewport(0, 0, winwidth, winheight);
+    }
 
     glTexSubImage2D(
             GL_TEXTURE_2D,
