@@ -39,7 +39,6 @@ static SDL_Window *window;
 static SDL_GLContext glcontext;
 
 // Flags
-static int grabmousef;
 
 
 void S_Fullscreen(int flag) {
@@ -53,7 +52,6 @@ void S_Fullscreen(int flag) {
 
 void S_GrabMouse(int flag) {
     SDL_SetRelativeMouseMode(flag);
-    grabmousef = flag;
 }
 
 
@@ -201,16 +199,6 @@ uint32_t S_Blit(Buffer *buf) {
     SDL_GL_SwapWindow(window);
 
     return S_GetTime() - start;
-}
-
-
-void S_MouseFix() {
-    int winwidth, winheight;
-    SDL_GetWindowSize(window, &winwidth, &winheight);
-
-    if (grabmousef) {
-        SDL_WarpMouseInWindow(window, winwidth / 2, winheight / 2);
-    }
 }
 
 

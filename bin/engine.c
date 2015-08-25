@@ -70,9 +70,7 @@ SpriteSheet pistol;
 
 // Flags
 int fullscreenf = 0;  // Fullscreen
-int grabf = 1;        // Grab mouse
 int mapf = 0;         // Automap
-int walkf = 0;        // Walk
 
 // Look-Up Tables
 double ray_angle_lut[WIDTH];
@@ -279,10 +277,6 @@ void Input() {
                         S_Fullscreen(fullscreenf);
                         break;
 
-                    case SDLK_LSHIFT:
-                        walkf = 1;
-                        break;
-
                     case SDLK_UP:
                     case 'w':
                         fwd = 1;
@@ -315,11 +309,6 @@ void Input() {
                         mapf = !mapf;
                         break;
 
-                    case 'g':
-                        grabf = !grabf;
-                        S_GrabMouse(grabf);
-                        break;
-
                     case 'q':
                         Quit();
                 }
@@ -345,9 +334,6 @@ void Input() {
                     case SDLK_LEFT:
                         turn = 0;
                         break;
-
-                    case SDLK_LSHIFT:
-                        walkf = 0;
                 }
                 break;
 
@@ -372,7 +358,7 @@ void Movement() {
                 G_Scale(fwd,    player.forward),
                 G_Scale(strafe, side)
                 ),
-            walkf ? ACCEL/2 : ACCEL
+            ACCEL
             );
 
     if (fwd || strafe) {
@@ -381,9 +367,8 @@ void Movement() {
         player.vel = G_Sub(player.vel, G_Scale(FRICTION, player.vel));
     }
 
-    double v = walkf ? SPEED/2 : SPEED;
-    if (G_Length(player.vel) > v) {
-        player.vel = G_SetLength(player.vel, v);
+    if (G_Length(player.vel) > SPEED) {
+        player.vel = G_SetLength(player.vel, SPEED);
     }
 
     // Translation

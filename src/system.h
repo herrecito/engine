@@ -45,12 +45,6 @@ Vector S_GetMousePos(Buffer *buf);
 // Set to 1 to keep the mouse inside the window.
 void S_GrabMouse(int flag);
 
-// Hack to work around a bug in SDL Relative Mouse Mode. Call in the main loop
-// to keep the mouse inside the screen by warping it to the center.
-//
-// Doesn't do anything if the mouse isn't grabbed.
-void S_MouseFix();
-
 
 
 //------------------------------------------------------------------------------
