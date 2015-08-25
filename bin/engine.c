@@ -41,9 +41,9 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 #define FRAMETIME (1000 / FPS)
 
 // Game
-#define VEL 6               // Max movement speed
-#define ACC 1.5             // Movement acceleration
-#define MU 0.2              // Friction
+#define SPEED 6             // Max movement speed
+#define ACCEL 1.5           // Movement acceleration
+#define FRICTION 0.2        // Friction
 #define VANG 0.1            // Turning speed
 #define SENSITIVITY 0.002   // Mouse sensitivity
 #define RADIUS 8            // Player radius
@@ -73,7 +73,7 @@ SpriteSheet pistol;
 // Flags
 int fps_limitf = 1;   // FPS limit
 int fpsf = 1;         // Show FPS
-int fullscreenff = 0; // Fullscreen
+int fullscreenf = 0;  // Fullscreen
 int grabf = 1;        // Grab mouse
 int mapf = 0;         // Automap
 int walkf = 0;        // Walk
@@ -279,8 +279,8 @@ void Input() {
             case SDL_KEYDOWN:
                 switch (ev.key.keysym.sym) {
                     case 'f':
-                        fullscreenff = !fullscreenff;
-                        S_Fullscreen(fullscreenff);
+                        fullscreenf = !fullscreenf;
+                        S_Fullscreen(fullscreenf);
                         break;
 
                     case SDLK_LSHIFT:
@@ -384,16 +384,16 @@ void Movement() {
                 G_Scale(fwd,    player.forward),
                 G_Scale(strafe, side)
                 ),
-            walkf ? ACC/2 : ACC
+            walkf ? ACCEL/2 : ACCEL
             );
 
     if (fwd || strafe) {
         player.vel = G_Sum(player.vel, a);
     } else {
-        player.vel = G_Sub(player.vel, G_Scale(MU, player.vel));
+        player.vel = G_Sub(player.vel, G_Scale(FRICTION, player.vel));
     }
 
-    double v = walkf ? VEL/2 : VEL;
+    double v = walkf ? SPEED/2 : SPEED;
     if (G_Length(player.vel) > v) {
         player.vel = G_SetLength(player.vel, v);
     }
