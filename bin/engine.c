@@ -37,8 +37,6 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 // Engine
 #define TICKRATE 60
 #define TICKTIME (1000 / TICKRATE) // milliseconds
-#define FPS 60
-#define FRAMETIME (1000 / FPS)
 
 // Game
 #define SPEED 6             // Max movement speed
@@ -71,8 +69,6 @@ SpriteSheet ascii;
 SpriteSheet pistol;
 
 // Flags
-int fps_limitf = 1;   // FPS limit
-int fpsf = 1;         // Show FPS
 int fullscreenf = 0;  // Fullscreen
 int grabf = 1;        // Grab mouse
 int mapf = 0;         // Automap
@@ -319,14 +315,6 @@ void Input() {
                         mapf = !mapf;
                         break;
 
-                    case 'r':
-                        fpsf = !fpsf;
-                        break;
-
-                    case 'e':
-                        fps_limitf = !fps_limitf;
-                        break;
-
                     case 'g':
                         grabf = !grabf;
                         S_GrabMouse(grabf);
@@ -407,58 +395,14 @@ int main() {
     Init();
 
     uint32_t last_tick = S_GetTime();
-    uint32_t last_second = S_GetTime();
-    uint32_t last_frame = S_GetTime();
-    int fps_counter = 0;
-
     while (1) {
-        uint32_t start = S_GetTime();
-
-        // Run ticks
         if (S_GetTime() - last_tick > TICKTIME) {
             last_tick = S_GetTime();
 
             Input();
             Movement();
-        }
-
-        // Keep mouse inside window
-        S_MouseFix();
-
-        // Draw screen
-        if (fps_limitf) {
-            if (S_GetTime() - last_frame > FRAMETIME) {
-                last_frame = S_GetTime();
-
-                Draw();
-                S_Blit(buffer);
-
-                fps_counter++;
-            }
-        } else {
             Draw();
             S_Blit(buffer);
-
-            fps_counter++;
-        }
-
-        // FPS Counter
-        if (fpsf) {
-            if (S_GetTime() - last_second > 1000) {
-                last_second = S_GetTime();
-                printf("FPS: %d\n", fps_counter);
-                fps_counter = 0;
-            }
-        }
-
-        // Sleep if FPS limit and there's some time left.
-        if (fps_limitf) {
-            int free_time = TICKTIME - (S_GetTime() - start);
-            if (free_time > 10) {
-                S_Sleep(1);  // Must assume it will sleep for 10ms;
-            } else if (free_time < 0) {
-                debug("Too slow!");
-            }
         }
     }
 
