@@ -54,8 +54,13 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
 Mobile player;
 
-// Moving forward, strafing, turning?
-int fwd, strafe, turn;
+// A Tick contains all the input info needed to process one gametick.
+typedef struct Tick {
+    int forward;            // 1 forward, -1 backwards
+    int strafe;             // 1 right, -1 left
+    int turn;               // 1 clockwise, -1 anticlockwise
+    int relative_mouse_x;   // > 0 clockwise, < 0 anticlockwise
+} Tick;
 
 Map *map;       // Current map
 Buffer *buffer; // Video buffer
@@ -260,13 +265,11 @@ uint32_t Draw() {
 }
 
 
-void Input() {
-    int x;
-    SDL_GetRelativeMouseState(&x, NULL);
-    if (x) {
-        player.forward = G_Rotate(player.forward, x * SENSITIVITY);
-    }
+Tick Input() {
+    static int fwd, strafe, turn;
 
+    Tick t = {0};
+    SDL_GetRelativeMouseState(&t.relative_mouse_x, NULL);
     SDL_Event ev;
     while (SDL_PollEvent(&ev)) {
         switch (ev.type)  {
@@ -342,26 +345,37 @@ void Input() {
                 break;
         }
     }
+
+    t.forward = fwd;
+    t.strafe = strafe;
+    t.turn = turn;
+
+    return t;
 }
 
 
-void Movement() {
+void ProcessATick(Tick t) {
     // Turning
-    if (turn) {
-        player.forward = G_Rotate(player.forward, turn * VANG);
+    if (t.turn) {
+        player.forward = G_Rotate(player.forward, t.turn * VANG);
     }
+
+    if (t.relative_mouse_x) {
+        player.forward = G_Rotate(player.forward, t.relative_mouse_x * SENSITIVITY);
+    }
+
 
     // Acceleration
     Vector side = G_Perpendicular(player.forward);
     Vector a = G_SetLength(
             G_Sum(
-                G_Scale(fwd,    player.forward),
-                G_Scale(strafe, side)
+                G_Scale(t.forward, player.forward),
+                G_Scale(t.strafe,  side)
                 ),
             ACCEL
             );
 
-    if (fwd || strafe) {
+    if (t.forward || t.strafe) {
         player.vel = G_Sum(player.vel, a);
     } else {
         player.vel = G_Sub(player.vel, G_Scale(FRICTION, player.vel));
@@ -384,8 +398,8 @@ int main() {
         if (S_GetTime() - last_tick > TICKTIME) {
             last_tick = S_GetTime();
 
-            Input();
-            Movement();
+            Tick t = Input();
+            ProcessATick(t);
             Draw();
             S_Blit(buffer);
         }
