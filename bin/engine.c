@@ -29,7 +29,6 @@
 #define NEAR 1                                  // Near clip plane distance
 #define FAR 300                                 // Far clip plane distance
 #define VIEW ((WIDTH / 2.0) / (tan(FOV / 2.0))) // Viewplane distance
-#define VFOV (atan2(HEIGHT / 2.0, VIEW))        // Vertical Field of View
 #define WALLHEIGHT 64
 #define POVHEIGHT (WALLHEIGHT / 2)  // Must be half the wall height.
 const Vector SCREEN_CENTER = { WIDTH/2, HEIGHT/2 };
