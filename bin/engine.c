@@ -252,13 +252,17 @@ void DrawGun() {
 }
 
 
-void Draw() {
+uint32_t Draw() {
+    uint32_t start = S_GetTime();
+
     DrawPOV();
     DrawGun();
 
     if (mapf) {
         DrawMap();
     }
+
+    return S_GetTime() - start;
 }
 
 
