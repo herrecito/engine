@@ -259,8 +259,6 @@ void Draw() {
     if (mapf) {
         DrawMap();
     }
-
-    S_Blit(buffer);
 }
 
 
@@ -429,11 +427,13 @@ int main() {
                 last_frame = S_GetTime();
 
                 Draw();
+                S_Blit(buffer);
 
                 fps_counter++;
             }
         } else {
             Draw();
+            S_Blit(buffer);
 
             fps_counter++;
         }
