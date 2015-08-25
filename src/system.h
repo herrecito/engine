@@ -39,11 +39,22 @@ uint32_t S_Blit(Buffer *buf);
 // Input
 //------------------------------------------------------------------------------
 
+// A Tick contains all the input info needed to process one gametick.
+typedef struct Tick {
+    int forward;            // 1 forward, -1 backwards
+    int strafe;             // 1 right, -1 left
+    int turn;               // 1 clockwise, -1 anticlockwise
+    int relative_mouse_x;   // > 0 clockwise, < 0 anticlockwise
+} Tick;
+
+
 // Returns a vector with the position of the mouse in buffer coordinates.
 Vector S_GetMousePos(Buffer *buf);
 
 // Set to 1 to keep the mouse inside the window.
 void S_GrabMouse(int flag);
+
+Tick S_GetTick();
 
 
 

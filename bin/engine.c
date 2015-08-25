@@ -1,11 +1,10 @@
 #include <assert.h>
 #include <float.h>
 #include <math.h>
+#include <stdlib.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
-
-#include <SDL.h>
 
 #include "buffer.h"
 #include "collision.h"
@@ -54,14 +53,6 @@ const Box SCREEN_BOX = { 0, HEIGHT-1, 0, WIDTH-1 };
 
 Mobile player;
 
-// A Tick contains all the input info needed to process one gametick.
-typedef struct Tick {
-    int forward;            // 1 forward, -1 backwards
-    int strafe;             // 1 right, -1 left
-    int turn;               // 1 clockwise, -1 anticlockwise
-    int relative_mouse_x;   // > 0 clockwise, < 0 anticlockwise
-} Tick;
-
 Map *map;       // Current map
 Buffer *buffer; // Video buffer
 
@@ -75,7 +66,7 @@ SpriteSheet pistol;
 
 // Flags
 int fullscreenf = 0;  // Fullscreen
-int mapf = 0;         // Automap
+int mapf = 1;         // Automap
 
 // Performance Graph
 
@@ -326,93 +317,6 @@ uint32_t Draw() {
 }
 
 
-Tick Input() {
-    static int fwd, strafe, turn;
-
-    Tick t = {0};
-    SDL_GetRelativeMouseState(&t.relative_mouse_x, NULL);
-    SDL_Event ev;
-    while (SDL_PollEvent(&ev)) {
-        switch (ev.type)  {
-            case SDL_KEYDOWN:
-                switch (ev.key.keysym.sym) {
-                    case 'f':
-                        fullscreenf = !fullscreenf;
-                        S_Fullscreen(fullscreenf);
-                        break;
-
-                    case SDLK_UP:
-                    case 'w':
-                        fwd = 1;
-                        break;
-
-                    case SDLK_DOWN:
-                    case 's':
-                        fwd = -1;
-                        break;
-
-                    case 'a':
-                        strafe= -1;
-                        break;
-
-                    case 'h':
-                    case SDLK_LEFT:
-                        turn = -1;
-                        break;
-
-                    case 'd':
-                        strafe = 1;
-                        break;
-
-                    case 'l':
-                    case SDLK_RIGHT:
-                        turn = 1;
-                        break;
-
-                    case '\t':
-                        mapf = !mapf;
-                        break;
-
-                    case 'q':
-                        Quit();
-                }
-                break;
-
-            case SDL_KEYUP:
-                switch (ev.key.keysym.sym) {
-                    case SDLK_UP:
-                    case SDLK_DOWN:
-                    case 'w':
-                    case 's':
-                        fwd = 0;
-                        break;
-
-                    case 'a':
-                    case 'd':
-                        strafe = 0;
-                        break;
-
-                    case 'h':
-                    case 'l':
-                    case SDLK_RIGHT:
-                    case SDLK_LEFT:
-                        turn = 0;
-                        break;
-                }
-                break;
-
-            case SDL_QUIT:
-                Quit();
-                break;
-        }
-    }
-
-    t.forward = fwd;
-    t.strafe = strafe;
-    t.turn = turn;
-
-    return t;
-}
 
 
 uint32_t ProcessATick(Tick t) {
@@ -463,7 +367,7 @@ int main() {
         if (S_GetTime() - last_tick > TICKTIME) {
             last_tick = S_GetTime();
 
-            Tick t = Input();
+            Tick t = S_GetTick();
 
             PerfInfo info = {0};
 

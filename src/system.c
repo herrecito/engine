@@ -182,6 +182,86 @@ void S_Quit() {
 }
 
 
+Tick S_GetTick() {
+    static int fwd, strafe, turn;
+
+    Tick t = {0};
+    SDL_GetRelativeMouseState(&t.relative_mouse_x, NULL);
+    SDL_Event ev;
+    while (SDL_PollEvent(&ev)) {
+        switch (ev.type)  {
+            case SDL_KEYDOWN:
+                switch (ev.key.keysym.sym) {
+                    case SDLK_UP:
+                    case 'w':
+                        fwd = 1;
+                        break;
+
+                    case SDLK_DOWN:
+                    case 's':
+                        fwd = -1;
+                        break;
+
+                    case 'a':
+                        strafe= -1;
+                        break;
+
+                    case 'h':
+                    case SDLK_LEFT:
+                        turn = -1;
+                        break;
+
+                    case 'd':
+                        strafe = 1;
+                        break;
+
+                    case 'l':
+                    case SDLK_RIGHT:
+                        turn = 1;
+                        break;
+
+                    case 'q':
+                        exit(0);
+                }
+                break;
+
+            case SDL_KEYUP:
+                switch (ev.key.keysym.sym) {
+                    case SDLK_UP:
+                    case SDLK_DOWN:
+                    case 'w':
+                    case 's':
+                        fwd = 0;
+                        break;
+
+                    case 'a':
+                    case 'd':
+                        strafe = 0;
+                        break;
+
+                    case 'h':
+                    case 'l':
+                    case SDLK_RIGHT:
+                    case SDLK_LEFT:
+                        turn = 0;
+                        break;
+                }
+                break;
+
+            case SDL_QUIT:
+                exit(0);
+                break;
+        }
+    }
+
+    t.forward = fwd;
+    t.strafe = strafe;
+    t.turn = turn;
+
+    return t;
+}
+
+
 uint32_t S_Blit(Buffer *buf) {
     uint32_t start = S_GetTime();
 
