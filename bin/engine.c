@@ -77,6 +77,21 @@ SpriteSheet pistol;
 int fullscreenf = 0;  // Fullscreen
 int mapf = 0;         // Automap
 
+// Performance Graph
+
+// Stores the time it took to process a tick, draw the full buffer
+// and blit it in milliseconds.
+typedef struct PerfInfo {
+    uint32_t ticktime;
+    uint32_t drawtime;
+    uint32_t blittime;
+} PerfInfo;
+
+// Ring buffer that stores the last PerfInfo's
+#define INFOBUFLEN 100
+PerfInfo infobuf[INFOBUFLEN];
+int infohead = 0;
+
 // Look-Up Tables
 double ray_angle_lut[WIDTH];
 
@@ -84,6 +99,53 @@ double ray_angle_lut[WIDTH];
 //------------------------------------------------------------------------------
 // Engine code
 //------------------------------------------------------------------------------
+
+void PushInfo(PerfInfo info) {
+    infobuf[infohead++] = info;
+
+    if (infohead > INFOBUFLEN - 1) {
+        infohead = 0;
+    }
+}
+
+
+void DrawOneInfo(PerfInfo info, int x) {
+    int y = 20;
+    for (int j = 0; j < info.ticktime; j++) {
+        B_SetPixel(buffer, x, y--, BLUE);
+    }
+
+    for (int j = 0; j < info.drawtime; j++) {
+        B_SetPixel(buffer, x, y--, GREEN);
+    }
+
+    for (int j = 0; j < info.blittime; j++) {
+        B_SetPixel(buffer, x, y--, YELLOW);
+    }
+
+    B_SetPixel(buffer, x, 20 - TICKTIME, RED);
+}
+
+
+// Draws a performance graph.
+// Each pixel represents a millisecond.
+//
+// Blue:    Time to process a Tick.
+// Green:   Time to draw the full buffer.
+// Yellow:  Time to blit the buffer to the screen.
+// Red:     Maximum time per Tick available.
+void DrawPerfGraph() {
+    int x = WIDTH - 10;
+
+    for (int i = infohead - 1; i >= 0; i--, x--) {
+        DrawOneInfo(infobuf[i], x);
+    }
+
+    for (int i = INFOBUFLEN - 1; i >= infohead; i--, x--) {
+        DrawOneInfo(infobuf[i], x);
+    }
+}
+
 
 void InitLUT() {
     for (int x = 0; x < WIDTH; x++) {
@@ -143,9 +205,6 @@ void DrawMap() {
         }
     }
 
-    D_DrawText(buffer, ascii, 10, 10,
-            "Player pos: (%f, %f)", player.pos.x, player.pos.y);
-
     Segment s1 = {
         .start = SCREEN_CENTER,
         .end = G_Sum(SCREEN_CENTER, G_Scale(RADIUS, G_Rotate(player.forward, FOV / 2)))
@@ -158,6 +217,8 @@ void DrawMap() {
     D_DrawSegment(buffer, s1, GREEN);
     D_DrawSegment(buffer, s2, GREEN);
     D_DrawCircle(buffer, SCREEN_CENTER.x, SCREEN_CENTER.y, RADIUS, GREEN);
+
+    DrawPerfGraph();
 }
 
 
@@ -403,9 +464,14 @@ int main() {
             last_tick = S_GetTime();
 
             Tick t = Input();
-            ProcessATick(t);
-            Draw();
-            S_Blit(buffer);
+
+            PerfInfo info = {0};
+
+            info.ticktime = ProcessATick(t);
+            info.drawtime = Draw();
+            info.blittime = S_Blit(buffer);
+
+            PushInfo(info);
         }
     }
 
