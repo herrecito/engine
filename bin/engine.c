@@ -354,7 +354,9 @@ Tick Input() {
 }
 
 
-void ProcessATick(Tick t) {
+uint32_t ProcessATick(Tick t) {
+    uint32_t start = S_GetTime();
+
     // Turning
     if (t.turn) {
         player.forward = G_Rotate(player.forward, t.turn * VANG);
@@ -387,6 +389,8 @@ void ProcessATick(Tick t) {
 
     // Translation
     player.pos = Co_Move(map, player).pos;
+
+    return S_GetTime() - start;
 }
 
 
