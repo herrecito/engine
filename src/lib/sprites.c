@@ -1,8 +1,8 @@
 #include <stdlib.h>
 
 #include "buffer.h"
+#include "load_image.h"
 #include "sprites.h"
-#include "system.h"
 
 
 SpriteSheet SS_LoadSpriteSheet(const char *path, int rows, int cols) {

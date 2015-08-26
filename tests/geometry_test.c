@@ -1,7 +1,7 @@
 #include "minunit.h"
 
-#include "defs.h"
-#include "geometry.h"
+#include "lib/defs.h"
+#include "lib/geometry.h"
 
 
 int test_vector_sum() {
@@ -145,7 +145,7 @@ int test_line_point_distance() {
 
 int test_rotate() {
     Vector a = { 1, 2 };
-    double angle = PI / 2;
+    double angle = M_PI / 2;
     Vector expected = { -2, 1 };
 
     mu_assert(VEQ(G_Rotate(a, angle), expected), "Rotate not equal");
@@ -182,7 +182,7 @@ int test_midpoint() {
 
 int test_rotate_segment() {
     Segment s = { {-1, 0}, {1, 0} };
-    double angle = -PI / 2;
+    double angle = -M_PI / 2;
     Segment expected = { {0, 1}, {0, -1} };
 
     mu_assert(SEGEQ(G_RotateSegment(s, angle), expected),
@@ -194,7 +194,7 @@ int test_rotate_segment() {
 
 int test_rotate_segment_around_point() {
     Segment s = { {-1, 0}, {1, 0} };
-    double angle = -PI / 2;
+    double angle = -M_PI / 2;
     Vector point = { 0, 0 };
     Segment expected = { {0, 1}, {0, -1} };
 
@@ -202,7 +202,7 @@ int test_rotate_segment_around_point() {
             "For (0, 0) behaves as RotateSegment()");
 
     s = (Segment){ {-1, 1}, {1, 1} };
-    angle = -PI / 2;
+    angle = -M_PI / 2;
     point = (Vector){0, 1};
     expected = (Segment){ {0, 2}, {0, 0} };
 

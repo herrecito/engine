@@ -24,6 +24,8 @@ enum Color {
 #define GETG(c) (((c) >>  8) & 0xFF)
 #define GETB(c) (((c) >> 16) & 0xFF)
 
+#define RGB_MASK 0xFFFFFF
+
 #define BUILDRGB(r, g, b) ((r) | (g) << 8 | (b) << 16)
 
 uint32_t C_ScaleColor(uint32_t color, double intensity);

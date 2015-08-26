@@ -470,3 +470,9 @@ int G_Parallel(Vector a, Vector b) {
 Vector G_Midpoint(Vector a, Vector b) {
     return (Vector){(a.x + b.x) / 2, (a.y + b.y) / 2};
 }
+
+
+int G_Overlap(Box a, Box b) {
+    // TODO
+    return 0;
+}

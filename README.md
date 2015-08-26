@@ -1,33 +1,8 @@
-![Ingame](http://i.imgur.com/OmqTuLs.png)
+### Dependencies
 
-# Dependencies
+* [GLFW](http://www.glfw.org/)
+* [GLEW](http://glew.sourceforge.net/)
 
-* SDL 2.0
-* SDL_image 2.0
-* GLEW
+### Libraries used
 
-# Build
-
-If you want to take it for a spin, build with:
-
-    make
-
-Create a map with:
-
-    ./bin/editor
-
-(Left button to add walls, right button to delete, S to save, L to load)
-
-And run it with:
-
-    ./bin/engine
-
-You'll need some textures and spritesheets:
-
-* ascii.png
-* ceil.png
-* floor.png
-* pistol.png
-* wall.png
-
-You can find mine here: http://imgur.com/a/F2Cnu
+* [stb](https://github.com/nothings/stb)

@@ -2,10 +2,10 @@
 
 #include "minunit.h"
 
-#include "collision.h"
-#include "defs.h"
-#include "geometry.h"
-#include "map.h"
+#include "lib/collision.h"
+#include "lib/defs.h"
+#include "lib/geometry.h"
+#include "lib/map.h"
 
 int test_check_point() {
     int CheckPoint(Vector p, Mobile mob, double *distance, double *t0);

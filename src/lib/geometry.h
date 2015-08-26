@@ -214,6 +214,9 @@ typedef struct {
 // Points close to the box borders are considered to be inside.
 int G_PointInsideBox(Box b, Vector p);
 
+// Returns 1 if Box a overlaps with Box b
+int G_Overlap(Box a, Box b);
+
 // Clips away the parts of the segment `in` outside of rect, if any.
 //
 // Returns 1 if part of the segment remains inside rect, storing it in out;

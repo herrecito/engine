@@ -52,7 +52,7 @@ void B_BlitBuffer(Buffer *dest, Buffer *src, int x, int y) {
     for (int j = 0; j < src->height; j++) {
         for (int i = 0; i < src->width; i++) {
             uint32_t src_pixel = B_GetPixel(src, i, j);
-            if (src_pixel != TRANSPARENT) {
+            if ((src_pixel & RGB_MASK) != TRANSPARENT) {
                 B_SetPixel(dest, i + x, j + y, src_pixel);
             }
         }

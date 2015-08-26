@@ -1,33 +1,49 @@
-CC=clang
-CFLAGS=-g -Wall -O3 -Isrc -I/usr/include/SDL2 -I/usr/include/libdrm -D_REENTRANT
-LDLIBS=-lm -lSDL2 -lpthread -lSDL2_image -lGLEW -lGLU -lGL
+CC = clang
+CFLAGS = -g -Wall -O3 -Isrc -Iinclude $(shell pkg-config --cflags glfw3 glew)\
+		 -DGLEW_STATIC -DGLFW_INCLUDE_NONE
+LDLIBS = -lm $(shell pkg-config --libs glfw3 glew)
 
-SOURCES=$(wildcard src/*.c)
-HEADERS=$(wildcard src/*.h)
-OBJECTS=$(patsubst %.c,%.o,$(SOURCES))
+LIB_SOURCES = $(wildcard src/lib/*.c)
+LIB_OBJECTS = $(patsubst %.c, %.o, $(LIB_SOURCES))
 
-BIN_SOURCES=$(wildcard bin/*.c)
-BINS=$(basename $(BIN_SOURCES))
+GAME_SOURCES = $(wildcard src/game/*.c)
+GAME_OBJECTS = $(patsubst %.c, %.o, $(GAME_SOURCES))
 
-TEST_SOURCES=$(wildcard tests/*.c)
-TESTS=$(basename $(TEST_SOURCES))
+MAPGEN_SOURCES = $(wildcard src/mapgenerator/*.c)
+MAPGEN_OBJECTS = $(patsubst %.c, %.o, $(MAPGEN_SOURCES))
 
-default: tags $(BINS) runtests
+TESTS_SOURCES = $(wildcard tests/*.c)
+TESTS = $(basename $(TESTS_SOURCES))
 
-$(BINS): %: %.c $(OBJECTS)
+HEADERS = $(wildcard src/**/*.h) $(wildcard src/*.h)
+SOURCES = $(wildcard src/**/*.c) $(wildcard src/*.c)
+OBJECTS = $(patsubst %.c, %.o,$(SOURCES))
+DEPS = $(patsubst %.c, %.d, $(SOURCES))
 
-CFLAGS+=-Itests
-$(TESTS): %: %.c $(OBJECTS)
+all: game mapgenerator tags runtests
 
-$(OBJECTS): %.o: %.c $(HEADERS)
+game: $(LIB_OBJECTS) $(GAME_OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
 
-tags: $(SOURCES) $(HEADERS) $(BIN_SOURCES) $(TEST_SOURCES)
-	ctags $^
+mapgenerator: $(LIB_OBJECTS) $(MAPGEN_OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
 
-clean:
-	rm -f $(OBJECTS) $(BINS) $(TESTS) tags
+$(TESTS): %: %.c $(LIB_OBJECTS)
+	$(CC) $(CFLAGS) $^ $(LDLIBS) -o $@
 
+%.o: %.c
+	$(CC) $(CFLAGS) -MMD $< -c -o $@
+
+-include $(DEPS)
+
+tags: $(SOURCES) $(HEADERS)
+	@ctags $^
+
+.PHONY: runtests
 runtests: $(TESTS)
-	./runtests.sh
+	@echo
+	@./runtests.sh
 
-.PHONY: clean runtests
+.PHONY: clean
+clean:
+	@rm -f $(OBJECTS) $(DEPS) $(TESTS) game mapgenerator tags

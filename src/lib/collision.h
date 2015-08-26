@@ -7,18 +7,10 @@
 #include "map.h"
 #include "geometry.h"
 
-// Represents anything that can move and collide with walls.
-// It has a size, represented by the radius of a surrounding circle.
-typedef struct Mobile {
-    Vector pos;
-    Vector vel;
-    Vector forward;  // *Must* be a versor
-    double radius;
-} Mobile;
 
 // Contains information about a collision event.
 typedef struct Collision {
-    Mobile mob;         // Status of the Mobile before the time of the collision
+    Mobile mob;         // Status of the Mobile before handling collisions
     Vector point;       // Point of collision
     Wall *wall;         // Wall that got hit
     double t0;          // Time to collision
