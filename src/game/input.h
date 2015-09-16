@@ -36,7 +36,7 @@ typedef struct Command {
 
 
 void PostEvent(KeyEvent kev);
-uint32_t ProcessEvents();
+uint32_t ProcessInput();
 
 void KeyCB(GLFWwindow* window, int key, int scancode, int action, int mods);
 

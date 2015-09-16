@@ -9,12 +9,6 @@
 #include "input.h"
 
 
-void PostEvent(KeyEvent kev) {
-    game.events[game.eventhead] = kev;
-    game.eventhead = (game.eventhead + 1) % MAXEVENTS;
-}
-
-
 Command BuildCommand() {
     Command cmd;
     cmd.velocity = G_Scale(game.forward, game.player.forward);
@@ -28,25 +22,22 @@ void RunCommand(Command cmd) {
 }
 
 
-uint32_t ProcessEvents() {
-    uint32_t start = S_GetTime();
+void DispatchEvent(KeyEvent kev) {
+    for (int i = 0; i < game.keymap->numbinds; i++) {
+        KeyBind *bind = &game.keymap->binds[i];
 
-    for ( ; game.eventtail != game.eventhead;
-            game.eventtail = (game.eventtail + 1) % MAXEVENTS)
-    {
-        KeyEvent kev = game.events[game.eventtail];
-
-        // Find KeyBind that responds to this KeyEvent (if any)
-        // and run the associated action.
-        for (int i = 0; i < game.keymap->numbinds; i++) {
-            KeyBind *bind = &game.keymap->binds[i];
-
-            if (bind->key == kev.key) {
-                bind->action(kev);
-                break;
-            }
+        if (bind->key == kev.key) {
+            bind->action(kev);
+            break;
         }
     }
+}
+
+
+uint32_t ProcessInput() {
+    uint32_t start = S_GetTime();
+
+    glfwPollEvents();
 
     Command cmd = BuildCommand();
     RunCommand(cmd);
@@ -58,5 +49,5 @@ uint32_t ProcessEvents() {
 void KeyCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
     KeyEvent kev = { key, action, mods };
 
-    PostEvent(kev);
+    DispatchEvent(kev);
 }

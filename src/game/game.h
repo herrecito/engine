@@ -20,13 +20,10 @@ typedef struct Game {
     Map *map;
     Mobile player;
 
-    // input.h
-    KeyEvent events[MAXEVENTS];
-    int eventhead, eventtail;
 
-    KeyMap *keymap;
+    // --- Input ---
+    KeyMap *keymap; // Current KeyMap
 
-    // Info to build Command
     int forward;
     int side;
     int turn;
