@@ -95,7 +95,7 @@ int test_ray_line_intersection() {
             "Detects the intersection");
 
     mu_assert(VEQ(intersection, result),
-            "Correctly calculates the intersection")
+            "Correctly calculates the intersection");
 
 
     ray = (Line){ .start = {0, 0}, .dir = {1, 0} };
