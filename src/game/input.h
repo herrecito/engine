@@ -15,14 +15,6 @@ typedef struct KeyEvent {
 } KeyEvent;
 
 
-// Encapsulates all the input info needed to update the player state
-typedef struct TickCmd {
-    double forward;
-    double side;
-    double angle;
-} TickCmd;
-
-
 // Associates a KeyEvent with an action
 typedef struct KeyBind {
     int key;
