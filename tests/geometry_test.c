@@ -102,7 +102,7 @@ int test_ray_line_intersection() {
     l   = (Line){ .start = {0, 1}, .dir = {1, 0} };
 
     mu_assert(G_RayLineIntersection(ray, l, NULL) == 0,
-        "Works as expected when ray and line are parallel");
+            "Works as expected when ray and line are parallel");
 
     return 0;
 }
@@ -113,7 +113,7 @@ int test_line_line_intersection() {
     Line l2 = { .start = {0, 1}, .dir = {1, 0} };
 
     mu_assert(G_LineLineIntersection(l1, l2, NULL) == 0,
-        "Works as expected when lines are parallel");
+            "Works as expected when lines are parallel");
 
     l1 = (Line){ .start = {0, 3}, .dir = {0, -1} };
     l2 = (Line){ .start = {-1, 0}, .dir = {1, 0} };
@@ -207,7 +207,7 @@ int test_rotate_segment_around_point() {
     expected = (Segment){ {0, 2}, {0, 0} };
 
     mu_assert(SEGEQ(G_RotateSegmentAroundPoint(s, angle, point), expected),
-                "Works for arbitrary points as well");
+            "Works for arbitrary points as well");
 
     return 0;
 }
