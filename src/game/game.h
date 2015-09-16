@@ -12,13 +12,13 @@
 
 #define MAXEVENTS 64
 
+// Contains all the game global state
 typedef struct Game {
-    // main.c
     GLFWwindow *window;
     Buffer *buffer;
 
-    Map *map;
-    Mobile player;
+    Map *map;       // Current Map
+    Mobile player;  // Player
 
 
     // --- Input ---
