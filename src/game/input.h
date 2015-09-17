@@ -29,12 +29,6 @@ typedef struct KeyMap {
 } KeyMap;
 
 
-// Player command
-typedef struct Command {
-    Vector velocity;
-} Command;
-
-
 void PostEvent(KeyEvent kev);
 uint32_t ProcessInput();
 

@@ -10,6 +10,12 @@
 #include "input.h"
 
 
+// Player command
+typedef struct Command {
+    Vector velocity;
+} Command;
+
+
 #define MAXEVENTS 64
 
 // Contains all the game global state
@@ -20,13 +26,16 @@ typedef struct Game {
     Map *map;       // Current Map
     Mobile player;  // Player
 
-
     // --- Input ---
     KeyMap *keymap; // Current KeyMap
 
     int forward;
-    int side;
-    int turn;
+    int backward;
+    int strafe_left;
+    int strafe_right;
+
+    int turn_left;
+    int turn_right;
 } Game;
 
 
@@ -35,5 +44,7 @@ extern Game game;
 void InitGame();
 void EndGame();
 Scene GetScene();
+Command BuildCommand();
+void RunCommand(Command cmd);
 
 #endif

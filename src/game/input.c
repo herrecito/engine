@@ -1,5 +1,7 @@
 #include <stdlib.h>
 
+#include <GLFW/glfw3.h>
+
 #include "lib/collision.h"
 #include "lib/defs.h"
 #include "lib/geometry.h"
@@ -7,19 +9,6 @@
 
 #include "game.h"
 #include "input.h"
-
-
-Command BuildCommand() {
-    Command cmd;
-    cmd.velocity = G_Scale(game.forward, game.player.forward);
-    return cmd;
-}
-
-
-void RunCommand(Command cmd) {
-    game.player.vel = cmd.velocity;
-    game.player = Co_Move(game.map, game.player);
-}
 
 
 void DispatchEvent(KeyEvent kev) {
@@ -46,7 +35,7 @@ uint32_t ProcessInput() {
 }
 
 
-void KeyCB(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void KeyCB(GLFWwindow *window, int key, int scancode, int action, int mods) {
     KeyEvent kev = { key, action, mods };
 
     DispatchEvent(kev);

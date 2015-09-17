@@ -36,11 +36,11 @@ int main() {
 
             PerfInfo info = {0};
 
-            info.ticktime = ProcessInput();
             Scene scene = GetScene();
             info.drawtime = DrawPOV(&scene, game.buffer);
             DrawPerfGraph(game.buffer, perfbuf, TICKTIME);
             info.blittime = S_Blit(game.window, game.buffer);
+            info.ticktime = ProcessInput();
             PushInfo(perfbuf, info);
         }
     }
