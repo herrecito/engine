@@ -1,6 +1,6 @@
 CC = clang
 CFLAGS = -g -Wall -O3 -Isrc -Iinclude $(shell pkg-config --cflags glfw3 glew)\
-		 -DGLEW_STATIC -DGLFW_INCLUDE_NONE
+		 -DGLFW_INCLUDE_NONE
 LDLIBS = -lm $(shell pkg-config --libs glfw3 glew)
 
 LIB_SOURCES = $(wildcard src/lib/*.c)
