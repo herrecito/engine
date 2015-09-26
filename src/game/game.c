@@ -48,10 +48,13 @@ Command BuildCommand() {
     Command cmd;
 
     if (game.turn_left && game.turn_right) {
+        cmd.turn = 0;
     } else if (game.turn_left) {
-        game.player.forward = G_Rotate(game.player.forward, -0.1);
+        cmd.turn = -0.1;
     } else if (game.turn_right) {
-        game.player.forward = G_Rotate(game.player.forward, 0.1);
+        cmd.turn = 0.1;
+    } else {
+        cmd.turn = 0;
     }
 
     Vector fwd = game.player.forward;
@@ -86,6 +89,7 @@ Command BuildCommand() {
 
 
 void RunCommand(Command cmd) {
+    game.player.forward = G_Rotate(game.player.forward, cmd.turn);
     game.player.vel = cmd.velocity;
     game.player.pos = Co_Move(game.map, game.player).pos;
 }

@@ -13,6 +13,7 @@
 // Player command
 typedef struct Command {
     Vector velocity;
+    double turn;
 } Command;
 
 
