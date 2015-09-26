@@ -54,50 +54,35 @@ static GLuint CompileShaderProgram() {
 
 
 static GLuint BuildQuad(GLuint shaderProgram) {
-    // Quad vertices ...
     GLfloat vertices[] = {
         // Vertex coord  Texture coord
-        -1,  1,          0, 0,
         1,  1,           1, 0,
+        -1,  1,          0, 0,
         1, -1,           1, 1,
         -1, -1,          0, 1
     };
 
-    // ... and elements.
-    GLuint elements[] = {
-        0, 1, 2,
-        2, 3, 0,
-    };
-
-    // Vertex Array Object
     GLuint vao;
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    // Vertex Buffer Object
     GLuint vbo;
     glGenBuffers(1, &vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    // Element Buffer Object
-    GLuint ebo;
-    glGenBuffers(1, &ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elements), elements,
-            GL_STATIC_DRAW);
-
     // Vertex attributes
     GLint posAttrib = glGetAttribLocation(shaderProgram, "position");
-    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE,
-            4 * sizeof(float), 0);
+    glVertexAttribPointer(posAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+            0);
     glEnableVertexAttribArray(posAttrib);
 
     GLint texAttrib = glGetAttribLocation(shaderProgram, "texcoord");
-    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE,
-            4 * sizeof(float), (void *)(2 * sizeof(float)));
+    glVertexAttribPointer(texAttrib, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+            (void *)(2 * sizeof(float)));
     glEnableVertexAttribArray(texAttrib);
 
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
     return vao;
@@ -176,7 +161,7 @@ uint32_t S_Blit(GLFWwindow *window, Buffer *buf) {
             GL_RGBA, GL_UNSIGNED_BYTE,  // format, type
             buf->pixels                 // pixels
             );
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     glfwSwapBuffers(window);
 
     return S_GetTime() - start;
