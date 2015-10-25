@@ -29,20 +29,15 @@ int main() {
 
     PerfBuffer *perfbuf = CreatePerfBuffer(64);
 
-    uint32_t last_tick = S_GetTime();
     while (!glfwWindowShouldClose(game.window)) {
-        if ((S_GetTime() - last_tick) > TICKTIME) {
-            last_tick = S_GetTime();
+        PerfInfo info = {0};
 
-            PerfInfo info = {0};
-
-            Scene scene = GetScene();
-            info.drawtime = DrawPOV(&scene, game.buffer);
-            DrawPerfGraph(game.buffer, perfbuf, TICKTIME);
-            info.blittime = S_Blit(game.window, game.buffer);
-            info.ticktime = ProcessInput();
-            PushInfo(perfbuf, info);
-        }
+        Scene scene = GetScene();
+        info.drawtime = DrawPOV(&scene, game.buffer);
+        DrawPerfGraph(game.buffer, perfbuf, TICKTIME);
+        info.ticktime = ProcessInput();
+        info.blittime = S_Blit(game.window, game.buffer);
+        PushInfo(perfbuf, info);
     }
 
     EndGame();

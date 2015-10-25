@@ -125,12 +125,8 @@ GLFWwindow *S_InitWindow(int width, int height) {
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // Create window and OpenGL context
-    GLFWwindow *window =
-        glfwCreateWindow(width, height, "engine", NULL, NULL);
+    GLFWwindow *window = glfwCreateWindow(width, height, "engine", NULL, NULL);
     glfwMakeContextCurrent(window);
-
-    // Disable vsync
-    glfwSwapInterval(0);
 
     // Disable cursor
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
