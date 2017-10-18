@@ -10,3 +10,4 @@ engine
 *.map
 *.png
 *.gif
+*.dSYM
