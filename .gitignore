@@ -1,4 +1,5 @@
 callgrind*
+.DS_Store
 cachegrind*
 *.o
 tags
